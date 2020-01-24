@@ -35,6 +35,37 @@ return [
 
     'connections' => [
 
+         // For Oracle
+        'oracle' => [
+            'driver'         => 'oracle',
+            'service_name'   => env('DB_SERVICE_NAME', ''),
+            'host'           => env('DB_HOST', ''),
+            'port'           => env('DB_PORT', ''),
+            'database'       => env('DB_DATABASE', ''),
+            'username'       => env('DB_USERNAME', ''),
+            'password'       => env('DB_PASSWORD', ''),
+            'charset'        => env('DB_CHARSET', 'AL32UTF8'),
+            'prefix'         => env('DB_PREFIX', ''),
+            'prefix_schema'  => env('DB_SCHEMA_PREFIX', ''),
+            'edition'        => env('DB_EDITION', 'ora$base'),
+            'server_version' => env('DB_SERVER_VERSION', '11g'),
+        ],
+
+        'oracle_portal' => [
+            'driver'         => 'oracle',
+            'service_name'   => env('DB_PORTAL_SERVICE_NAME', ''),  
+            'host'           => env('DB_PORTAL_HOST', ''),
+            'port'           => env('DB_PORTAL_PORT', ''),
+            'database'       => env('DB_PORTAL_DATABASE', ''),
+            'username'       => env('DB_PORTAL_USERNAME', ''),
+            'password'       => env('DB_PORTAL_PASSWORD', ''),
+            'charset'        => env('DB_PORTAL_CHARSET', 'AL32UTF8'),
+            'prefix'         => env('DB_PORTAL_PREFIX', ''),
+            'prefix_schema'  => env('DB_PORTAL_SCHEMA_PREFIX', ''),
+            'edition'        => env('DB_PORTAL_EDITION', 'ora$base'),
+            'server_version' => env('DB_PORTAL_SERVER_VERSION', '11g'),
+        ],
+        
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DATABASE_URL'),

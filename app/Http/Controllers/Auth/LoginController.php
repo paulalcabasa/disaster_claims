@@ -24,14 +24,15 @@ class LoginController extends Controller
     {
         
         echo 'AUTHENTICATING...';
+    
       //  die;
         // Redirect if authenticated already
        // if (Auth::check()) return redirect()->route('dashboard');
         if (Auth::check()) return redirect()->action('DashboardController@dashboard');
-
+           
         // Query user data (Source: Oracle or IPC Portal)
         $user = $oracle_user->get($user_id)[0];
-        
+      
         // Existence validation
             
         
@@ -39,6 +40,7 @@ class LoginController extends Controller
         $auth = Auth::guard($this->user_type->user_guard_type($user->source_id))
         ->loginUsingId($user->user_id);
 
+        dd($auth);
         if ($auth) {
             $optional_middle = $user->middle_name ?? '';
 

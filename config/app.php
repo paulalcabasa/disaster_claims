@@ -2,6 +2,10 @@
 
 return [
 
+    'system_id' => env('SYSTEM_ID'),
+    'hostname' => env('HOSTNAME'),
+    'webapps_url' => env('WEBAPPS_URL'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -165,7 +169,7 @@ return [
         /*
          * Package Service Providers...
          */
-
+        Yajra\Oci8\Oci8ServiceProvider::class,
         /*
          * Application Service Providers...
          */
