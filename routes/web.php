@@ -11,6 +11,11 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', 'RedirectController@redirect_login');
+
+Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenticated Users
+
 });
+
+Route::get('login/{user_id}', 'Auth\LoginController@authenticate');
+Route::get('logout', 'Auth\LogoutController@logout')->name('api_logout');
