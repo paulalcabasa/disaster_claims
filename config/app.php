@@ -5,6 +5,7 @@ return [
     'system_id' => env('SYSTEM_ID'),
     'hostname' => env('HOSTNAME'),
     'webapps_url' => env('WEBAPPS_URL'),
+    'app_url' => env('APP_URL'),
 
     /*
     |--------------------------------------------------------------------------

@@ -27,8 +27,8 @@ class LoginController extends Controller
     
       //  die;
         // Redirect if authenticated already
-       // if (Auth::check()) return redirect()->route('dashboard');
-        if (Auth::check()) return redirect()->action('DashboardController@dashboard');
+        if (Auth::check()) return redirect()->route('claim-list');
+       // if (Auth::check()) return redirect()->action('ClaimsController@index');
            
         // Query user data (Source: Oracle or IPC Portal)
         $user = $oracle_user->get($user_id)[0];
@@ -40,7 +40,7 @@ class LoginController extends Controller
         $auth = Auth::guard($this->user_type->user_guard_type($user->source_id))
         ->loginUsingId($user->user_id);
 
-        dd($auth);
+ 
         if ($auth) {
             $optional_middle = $user->middle_name ?? '';
 
@@ -76,8 +76,8 @@ class LoginController extends Controller
             $user_log->insert_log($user_log_params);
 
             // Redirect User on initial page
-           // return redirect()->route('dashboard');
-            return redirect()->action('DashboardController@dashboard');
+            return redirect()->route('claim-list');
+            //return redirect()->action('ClaimsController@index');
            
         }
         else {

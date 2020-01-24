@@ -12,11 +12,13 @@
 */
 
 Route::get('/', 'RedirectController@redirect_login');
+Route::get('redirect_logout', 'RedirectController@redirect_logout')->name('redirect_logout');
 
 Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenticated Users
 	/* Dashboard */
-	Route::get('dashboard', 'DashboardController@dashboard'); //->name('dashboard');
 
+	Route::view('claim-entry', 'claim_entry')->name('claim-entry'); //->name('dashboard');
+	Route::view('claim-list', 'claim_list')->name('claim-list'); //->name('dashboard');
 });
 
 Route::get('login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');
