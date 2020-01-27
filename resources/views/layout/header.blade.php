@@ -22,7 +22,14 @@
 	<!-- /core JS files -->
 
 	<!-- Theme JS files -->
+	<script src="{{ asset('global_assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
+	<script src="{{ asset('global_assets/js/plugins/notifications/sweet_alert.min.js') }}"></script>
+	<script src="{{ asset('global_assets/js/plugins/forms/selects/select2.min.js') }}"></script>
+	<script src="{{ asset('global_assets/js/plugins/tables/datatables/datatables.min.js') }}"></script>
+	<!-- Theme JS files -->
 	<script src="{{ asset('assets/js/app.js') }}"></script>
+	<script src="{{ asset('public/js/app.js') }}"></script>
+	
 	<!-- /theme JS files -->
 
     <style>

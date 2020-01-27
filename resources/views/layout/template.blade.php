@@ -70,5 +70,6 @@
 	</div>
 	<!-- /page content -->
 
+	 @stack('scripts')
 </body>
 </html>

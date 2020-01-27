@@ -1,66 +1,105 @@
 @extends('layout.template')
-
-@section('page-title','Claim Entry')
+@section('page-title','Entry')
 @section('content')
 
 <!-- Form layouts -->
+<div id="app">
+
+<div class="alert bg-warning text-white alert-styled-left alert-dismissible" v-if="searchFlag == 1 && !vehicleDetails.hasOwnProperty('sales_model')">
+    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+    <span class="font-weight-semibold">Warning!</span> <strong>@{{ csNo }}</strong> not found!
+    Reasons why you encouter this issue:
+    <ul>
+        <li>You have entered an invalid CS No</li>
+        <li>You have already submitted a claim for this unit.</li>
+        <li>This unit is not affected by Taal's eruption.</li>
+    </ul>
+</div>
+
 <div class="row">
     <div class="col-md-6">
 
         <!-- Horizontal form -->
         <div class="card">
             <div class="card-header header-elements-inline">
-                <h5 class="card-title">Horizontal form</h5>
-                <div class="header-elements">
-                    <div class="list-icons">
-                        <a class="list-icons-item" data-action="collapse"></a>
-                        <a class="list-icons-item" data-action="reload"></a>
-                        <a class="list-icons-item" data-action="remove"></a>
-                    </div>
-                </div>
+                <h5 class="card-title">Vehicle Details</h5>
             </div>
 
             <div class="card-body">
                 <form action="#">
                     <div class="form-group row">
-                        <label class="col-lg-3 col-form-label">Text input</label>
-                        <div class="col-lg-9">
-                            <input type="text" class="form-control">
+                        <label class="col-lg-4 col-form-label">CS No.</label>
+                        <div class="col-lg-8">
+                           <div class="input-group">
+
+                                <input v-if="searchFlag == 0" type="text" class="form-control" v-model="csNo" placeholder="CS Number">
+                                <input v-if="searchFlag == 1" type="text" class="form-control" readonly="readonly" :value="csNo" placeholder="CS Number">
+                                <span class="input-group-append">
+                                    <button class="btn btn-primary btn-sm" type="button" @click="searchVehicle"><i class="icon-search4"></i></button>
+                                    <button class="btn btn-danger btn-sm" type="button" @click="clearSearch"><i class="icon-cross3"></i></button>
+                                </span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-lg-3 col-form-label">Password</label>
-                        <div class="col-lg-9">
-                            <input type="password" class="form-control">
+                        <label class="col-lg-4 col-form-label">Model</label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control" readonly="readonly" :value="vehicleDetails.model_variant"/>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-lg-3 col-form-label">Select</label>
-                        <div class="col-lg-9">
-                            <select name="select" class="form-control">
-                                <option value="opt1">Basic select</option>
-                                <option value="opt2">Option 2</option>
-                                <option value="opt3">Option 3</option>
-                                <option value="opt4">Option 4</option>
-                                <option value="opt5">Option 5</option>
-                                <option value="opt6">Option 6</option>
-                                <option value="opt7">Option 7</option>
-                                <option value="opt8">Option 8</option>
-                            </select>
+                        <label class="col-lg-4 col-form-label">Variant</label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control" readonly="readonly" :value="vehicleDetails.sales_model"/>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-lg-3 col-form-label">Textarea</label>
-                        <div class="col-lg-9">
-                            <textarea rows="5" cols="5" class="form-control" placeholder="Default textarea"></textarea>
+                        <label class="col-lg-4 col-form-label">Color</label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control" readonly="readonly" :value="vehicleDetails.color"/>
                         </div>
                     </div>
+
+                    <div class="form-group row">
+                        <label class="col-lg-4 col-form-label">VIN</label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control" readonly="readonly" :value="vehicleDetails.vin_no"/>
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <!-- /horizotal form -->
+
+        <!-- Horizontal form -->
+        <div class="card" v-if="vehicleParts.length > 0">
+            <div class="card-header header-elements-inline">
+                <h5 class="card-title">Replacement Parts</h5>
+            </div>
+
+            <div class="card-body">
+                <form action="#">
+                    <div class="form-group row">
+                      
+                        <div class="col-lg-8">
+                            <div class="form-check" v-for="parts in vehicleParts">
+                                <label class="form-check-label">
+                                  <input type="checkbox" checked="parts.checked_flag" v-model="parts.checked_flag" class="form-check-input-styled" data-fouc="">
+                                    @{{ parts.description }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>                
 
                     <div class="text-right">
-                        <button type="submit" class="btn btn-primary">Submit form <i class="icon-paperplane ml-2"></i></button>
+                        <button type="button" class="btn btn-primary" @click="submit">Submit</button>
                     </div>
                 </form>
             </div>
@@ -69,56 +108,201 @@
 
     </div>
 
-    <div class="col-md-6">
+   
+</div>
 
-        <!-- Vertical form -->
-        <div class="card">
-            <div class="card-header header-elements-inline">
-                <h5 class="card-title">Vertical form</h5>
-                <div class="header-elements">
-                    <div class="list-icons">
-                        <a class="list-icons-item" data-action="collapse"></a>
-                        <a class="list-icons-item" data-action="reload"></a>
-                        <a class="list-icons-item" data-action="remove"></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-body">
-                <form action="#">
-                    <div class="form-group">
-                        <label>Text input</label>
-                        <input type="text" class="form-control">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Select</label>
-                        <select name="select" class="form-control">
-                            <option value="opt1">Basic select</option>
-                            <option value="opt2">Option 2</option>
-                            <option value="opt3">Option 3</option>
-                            <option value="opt4">Option 4</option>
-                            <option value="opt5">Option 5</option>
-                            <option value="opt6">Option 6</option>
-                            <option value="opt7">Option 7</option>
-                            <option value="opt8">Option 8</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Textarea</label>
-                        <textarea rows="4" cols="4" class="form-control" placeholder="Default textarea"></textarea>
-                    </div>
-
-                    <div class="text-right">
-                        <button type="submit" class="btn btn-primary">Submit form <i class="icon-paperplane ml-2"></i></button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <!-- /vertical form -->
-
-    </div>
 </div>
 <!-- /form layouts -->
 @stop
+
+@push('scripts')
+<script>
+
+
+    // Defaults
+    var swalInit = swal.mixin({
+        buttonsStyling: false,
+        confirmButtonClass: 'btn btn-primary',
+        cancelButtonClass: 'btn btn-light'
+    });
+
+    var vm =  new Vue({
+        el : "#app",
+        data: {
+            csNo : '',
+            vehicleDetails : [],
+            vehicleParts : [],
+            searchFlag : 0
+        },
+        methods :{
+            searchVehicle(){ 
+                var self = this;
+
+                if(this.csNo == ""){
+                    self.vehicleDetails = self.vehicleParts = [];
+                    
+                    swalInit({
+                        title: 'Warning',
+                        text: 'Kindly specify the CS Number',
+                        type: 'warning',
+                        allowEscapeKey: false,
+                        allowEnterKey: false
+                    });
+
+                    return false;
+                }
+
+                self.searchFlag = 0;
+                self.blockPage();
+                axios.get('vehicle/search/' + this.csNo)
+                    .then( (response) => {
+                        self.vehicleDetails = response.data;
+                        self.searchFlag = 1;
+                    })
+                    .then( () => {
+                        self.vehicleParts = [];
+                        if(self.vehicleDetails.hasOwnProperty('sales_model')){
+                            self.getParts(self.vehicleDetails.model_id);
+                        }
+                    })
+                    .catch( (error) => {
+                        swalInit({
+                            title: 'System Error : Get Vehicle Details',
+                            text: 'Unexpected error occured! Please contact system developer.',
+                            type: 'error',
+                            allowEscapeKey: false,
+                            allowEnterKey: false
+                        });
+                    }).finally( () => {
+                        self.unblockPage();
+                    });
+            },
+            getParts(modelId){
+                var self = this;
+                self.vehicleParts = [];
+                self.blockPage();
+                axios.get('parts/get/' + modelId)
+                    .then( (response) => {
+                        self.vehicleParts = response.data;
+                    })
+                    .catch( (error) => {
+                        swalInit({
+                            title: 'System Message',
+                            text: 'No part has been registered on ' + self.vehicleDetails.sales_model + ". Please contact Isuzu After Sales.",
+                            type: 'warning',
+                            allowEscapeKey: false,
+                            allowEnterKey: false
+                        });
+                    })
+                    .finally( () => {
+                        $('.form-check-input-styled').uniform();
+                        self.unblockPage();
+                    });
+            },
+            blockPage() {
+                $.blockUI({ 
+                    message: '<i class="icon-spinner4 spinner"></i>',
+                    overlayCSS: {
+                        backgroundColor: '#1b2024',
+                        opacity: 0.8,
+                        cursor: 'wait'
+                    },
+                    css: {
+                        border: 0,
+                        color: '#fff',
+                        padding: 0,
+                        backgroundColor: 'transparent'
+                    }
+                });
+            },
+            unblockPage(){
+                 $.unblockUI();
+            },
+            submit(){
+                var self = this;
+
+                var ctrSelectedParts = 0;
+                for(parts of self.vehicleParts){
+                    if(parts.checked_flag){ 
+                        ctrSelectedParts++;
+                    }
+                }
+
+                if(ctrSelectedParts == 0){
+                    swalInit({
+                        title: 'Warning',
+                        text: 'Please selected atleast one (1) part',
+                        type: 'error',
+                        allowEscapeKey: false,
+                        allowEnterKey: false
+                    });
+                    return false;
+                }
+                
+                swalInit({
+                    title: 'Are you sure?',
+                    text: 'You will not be able to modify changes on this request.',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes'
+                }).then( (result) => {
+                    if(result.value){
+                        self.blockPage();
+                        axios.post('claim/submit',{
+                            csNo : self.csNo,
+                            parts : self.vehicleParts
+                        }).then( (response) => {
+                            swalInit({
+                                title: 'Claim Submission',
+                                text: 'You have succesfully submitted your claim.',
+                                type: 'success',
+                                allowEscapeKey: false,
+                                allowEnterKey: false
+                            });
+
+                            self.vehicleDetails = self.vehicleParts = [];
+                            self.csNo = "";
+                        }).catch( (error) => {
+                            swalInit({
+                                title: 'System Error : Claim Submission',
+                                text: 'Unexpected error occured! Please contact system developer.',
+                                type: 'error',
+                                allowEscapeKey: false,
+                                allowEnterKey: false
+                            });
+                        }).finally( () => {
+                            self.unblockPage();
+                            self.searchFlag = 0;
+                        });
+                    }
+                });
+
+                
+            },
+            clearSearch() {
+                this.vehicleDetails = this.vehicleParts = [];
+                this.searchFlag = 0;
+                this.csNo = "";
+            }
+        },
+        created: function () {
+            // `this` points to the vm instance
+             
+        },
+
+        mounted : function () {
+           // Initialize plugin
+           
+        },
+
+        /* watch : {
+            csNo: function(val) {
+                if(val == ""){
+                    this.vehicleParts = this.vehicleDetails = [];
+                }
+            }
+        } */
+    
+    }); 
+</script>
+@endpush
