@@ -14,6 +14,11 @@ class VehicleController extends Controller
         return $vehicleDetails;
     }
 
+    public function getAffectedUnits(){
+        $vehicle = new Vehicle;
+        return $vehicle->getAffectedUnits();
+    }
+
     
 
 }

@@ -32,13 +32,15 @@
                         <div class="col-lg-8">
                            <div class="input-group">
 
-                                <input v-if="searchFlag == 0" type="text" class="form-control" v-model="csNo" placeholder="CS Number">
+                                <input v-if="searchFlag == 0" type="text" class="form-control" v-model="csNo" placeholder="Enter CS Number">
                                 <input v-if="searchFlag == 1" type="text" class="form-control" readonly="readonly" :value="csNo" placeholder="CS Number">
                                 <span class="input-group-append">
                                     <button class="btn btn-primary btn-sm" type="button" @click="searchVehicle"><i class="icon-search4"></i></button>
                                     <button class="btn btn-danger btn-sm" type="button" @click="clearSearch"><i class="icon-cross3"></i></button>
                                 </span>
                             </div>
+
+                         
                         </div>
                     </div>
 
@@ -117,7 +119,6 @@
 
 @push('scripts')
 <script>
-
 
     // Defaults
     var swalInit = swal.mixin({

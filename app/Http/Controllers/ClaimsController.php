@@ -56,8 +56,15 @@ class ClaimsController extends Controller
     }
 
     public function getClaims(){
-        $claimHeader = new ClaimHeader;
-        $data = $claimHeader->getDealerClaims(session('user')['customer_id']);    
+        $claimHeader = new ClaimHeader;       
+        $data = $claimHeader->getDealerClaims(session('user')['customer_id']);
+        return $data;
+    }
+
+    public function getAllClaims(){
+       
+        $claimHeader = new ClaimHeader;       
+        $data = $claimHeader->getAllClaims();
         return $data;
     }
 
@@ -65,6 +72,10 @@ class ClaimsController extends Controller
         $claimHeader = new ClaimHeader;
         $claimLines = new ClaimLines;
         $header = $claimHeader->getDetails($request->claim_header_id);
-        return $header;
+        $parts = $claimLines->getParts($request->claim_header_id);
+        return [
+            'claimDetails' => $header,
+            'parts'  => $parts
+        ];
     }
 }

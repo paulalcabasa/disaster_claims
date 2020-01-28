@@ -16,6 +16,9 @@ Route::get('redirect_logout', 'RedirectController@redirect_logout')->name('redir
 
 Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenticated Users
 	
+	Route::get('dashboard','DashboardController@index')->name('dashboard');
+
+	// user
 	Route::view('claim-entry', 'claim_entry')->name('claim-entry'); //->name('dashboard');
 	Route::view('claim-list', 'claim_list')->name('claim-list'); //->name('dashboard');
 
@@ -27,7 +30,15 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('claims/get/{claim_header_id}','ClaimsController@show');
 
 
-;});
+	// admin
+	Route::view('admin/claim-list','admin.claims')->name('admin-claims');
+	Route::get('admin/claims/get-all','ClaimsController@getAllClaims');
+	Route::view('admin/affected-units-list', 'admin.affected_units_list')->name('affected-units-list');
+	Route::get('admin/claims/get/{claim_header_id}','ClaimsController@show');
+	Route::get('admin/vehicle/get-affected-units','VehicleController@getAffectedUnits');
+
+	
+});
 
 Route::get('login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');
 Route::get('logout', 'Auth\LogoutController@logout')->name('api_logout');

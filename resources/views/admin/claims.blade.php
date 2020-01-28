@@ -15,6 +15,7 @@
             <thead>
                 <tr>
                     <th>Ref No.</th>
+                    <th>Dealer</th>
                     <th>CS No.</th>
                     <th>Model</th>
                     <th>Variant</th>
@@ -25,6 +26,7 @@
             <tbody>
                 <tr v-for="row in list">
                     <td>@{{ row.claim_header_id }}</td>
+                    <td>@{{ row.account_name }}</td>
                     <td>@{{ row.cs_no }}</td>
                     <td>@{{ row.model }}</td>
                     <td>@{{ row.variant }}</td>
@@ -151,11 +153,11 @@
         },
         created: function () {
             var self = this;
-            axios.get('claims/get')
+            axios.get('claims/get-all')
                 .then( (response) => {
                     self.list = response.data;
                 }).catch( (error) => {
-                    alert("Unexpected error occured!");
+                    console.log(error);
                 }).finally( () => {
                     
                     // Setting datatable defaults

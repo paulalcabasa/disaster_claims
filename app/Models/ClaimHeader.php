@@ -39,6 +39,34 @@ class ClaimHeader extends Model
         return $query;
     }
 
+    public function getAllClaims(){
+        $sql = "SELECT ch.claim_header_id,
+                        ch.cs_no,
+                        msib.attribute9 variant,
+                        ipc_dms.ipc_get_vehicle_variant (msib.segment1) model,
+                        to_char(ch.creation_date,'mm/dd/yyyy') creation_date,
+                        cust.party_name customer_name,
+                        cust.account_name
+                FROM ipc.ipc_dcm_claim_header ch
+                    LEFT join mtl_serial_numbers msn
+                        ON ch.cs_no = msn.serial_number
+                    LEFT JOIN mtl_system_items_b msib
+                        ON msn.inventory_item_id = msib.inventory_item_id
+                    LEFT JOIN ipc_dms.oracle_customers_v cust
+                        ON cust.cust_account_id = ch.customer_id
+                        AND cust.profile_class = 'Dealers-Vehicle'
+                WHERE 1 = 1
+                    AND msib.organization_id IN (121)
+                    AND msib.inventory_item_status_code = 'Active'
+                    AND msib.attribute9 IS NOT NULL
+                    AND msib.item_type = 'FG'
+                ";
+    
+        $query = DB::select($sql);
+        return $query;
+    }
+
+
     public function getDetails($claim_header_id){
         $sql = "SELECT ch.claim_header_id,
                         ch.cs_no,
@@ -66,6 +94,6 @@ class ClaimHeader extends Model
         
         $data =  !empty($query) ? $query[0] : $query;
 
-        return response()->json($data);
+        return $data;
     }
 }

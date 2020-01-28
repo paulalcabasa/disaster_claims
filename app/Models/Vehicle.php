@@ -43,7 +43,30 @@ class Vehicle extends Model
         $data =  !empty($query) ? $query[0] : $query;
 
         return response()->json($data);
+    }
 
+    public function getAffectedUnits(){
+        $sql = "SELECT msib.inventory_item_id,
+                        msn.serial_number cs_number,
+                        msib.organization_id,
+                        ipc_dms.ipc_get_vehicle_variant (msib.segment1) model_variant,
+                        NVL (msib.attribute8, 'NO COLOR')               color,
+                        msib.segment1                                   prod_model,
+                        msib.description                                prod_model_desc,
+                        msib.attribute9                                 sales_model,
+                        msib.attribute29                                vehicle_type,
+                        msn.attribute2 vin_no,
+                        afu.location
+                FROM ipc.ipc_dcm_affected_units afu
+                    LEFT JOIN mtl_serial_numbers msn
+                        ON msn.serial_number = AFU.CS_NUMBER
+                    LEFT JOIN mtl_system_items_b msib
+                        ON msn.inventory_item_id = msib.inventory_item_id
+                        AND msn.current_organization_id = msib.organization_id
+                WHERE 1 = 1
+                    AND msn.c_attribute30 IS NULL";
+        $query = DB::select($sql);  
+        return $query;
     }
 
 }
