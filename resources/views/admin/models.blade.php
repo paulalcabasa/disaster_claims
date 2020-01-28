@@ -1,6 +1,6 @@
 @extends('layout.template')
 
-@section('page-title','Affected Units')
+@section('page-title','Models and Parts')
 @section('content')
 <!-- Basic table -->
 <div id="app">
@@ -14,22 +14,14 @@
         <table class="table" id="list">
             <thead>
                 <tr>
-                    <th>CS No.</th>
-                    <th>VIN</th>
                     <th>Model</th>
-                    <th>Variant</th>
-                    <th>Color</th>
-                    <th>Location</th>
+                    <th>Part Description</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="row in list">
-                    <td>@{{ row.cs_number }}</td>
-                    <td>@{{ row.vin_no }}</td>
-                    <td>@{{ row.sales_model }}</td>
-                    <td>@{{ row.model_variant }}</td>
-                    <td>@{{ row.color }}</td>
-                    <td>@{{ row.location }}</td>
+                    <td>@{{ row.model_name }}</td>
+                    <td>@{{ row.part_description }}</td>
                 </tr>
             </tbody>
         </table> 
@@ -59,7 +51,7 @@
         },
         created: function () {
             var self = this;
-            axios.get('vehicle/get-affected-units')
+            axios.get('models/get')
                 .then( (response) => {
                     self.list = response.data;
                 }).catch( (error) => {
@@ -69,11 +61,7 @@
                     // Setting datatable defaults
                     $.extend( $.fn.dataTable.defaults, {
                         autoWidth: false,
-                        columnDefs: [{ 
-                            orderable: false,
-                            width: 100,
-                            targets: [ 5 ]
-                        }],
+
                         dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
                         language: {
                             search: '<span>Filter:</span> _INPUT_',

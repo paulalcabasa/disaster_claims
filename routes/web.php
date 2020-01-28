@@ -36,6 +36,8 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::view('admin/affected-units-list', 'admin.affected_units_list')->name('affected-units-list');
 	Route::get('admin/claims/get/{claim_header_id}','ClaimsController@show');
 	Route::get('admin/vehicle/get-affected-units','VehicleController@getAffectedUnits');
+	Route::view('admin/models','admin.models')->name('models');
+	Route::get('admin/models/get','ModelPartsController@getModelParts');
 
 	
 });

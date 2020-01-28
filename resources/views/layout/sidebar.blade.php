@@ -110,6 +110,12 @@
 								<span>Affected Units</span>
 							</a>
 						</li>
+						<li class="nav-item">
+							<a href="{{ route('models') }}" class="nav-link">
+								<i class="icon-list-unordered"></i>
+								<span>Models</span>
+							</a>
+						</li>
 						@endif 
 						<!-- /main -->
 

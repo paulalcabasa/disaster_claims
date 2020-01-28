@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ModelParts;
-
+use DB;
 
 class ModelPartsController extends Controller
 {
@@ -23,6 +23,19 @@ class ModelPartsController extends Controller
             ]);
         }
         return $data;
+    }
+
+    public function getModelParts() {
+       $sql = "SELECT mdl.model_name,
+                      mp.description part_description
+                FROM ipc.ipc_dcm_models mdl
+                    LEFT JOIN ipc.ipc_dcm_model_parts mp
+                    ON mp.model_id = mdl.model_id";
+
+        $query = DB::select($sql);
+
+        return $query;
+
     }
 
 }
