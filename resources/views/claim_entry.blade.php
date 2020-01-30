@@ -71,7 +71,21 @@
                             <input type="text" class="form-control" readonly="readonly" :value="vehicleDetails.vin_no"/>
                         </div>
                     </div>
+
+                    <div class="form-group row">
+                        <label class="col-lg-4 col-form-label">Invoice No.</label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control" readonly="readonly" :value="vehicleDetails.trx_number"/>
+                        </div>
+                    </div>
                     
+                    <div class="form-group row">
+                        <label class="col-lg-4 col-form-label">Pullout Date</label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control" readonly="readonly" :value="vehicleDetails.pullout_date"/>
+                        </div>
+                    </div>
+
                 </form>
             </div>
         </div>
@@ -93,15 +107,22 @@
                         <div class="col-lg-8">
                             <div class="form-check" v-for="parts in vehicleParts">
                                 <label class="form-check-label">
-                                  <input type="checkbox" checked="parts.checked_flag" v-model="parts.checked_flag" class="form-check-input-styled" data-fouc="">
+                                  <input type="checkbox" checked="parts.checked_flag" v-model="parts.checked_flag" class="form-check-input-styled cb_parts" data-fouc="">
                                     @{{ parts.description }}
                                 </label>
                             </div>
                         </div>
                     </div>                
 
+                   
+
                     <div class="text-right">
-                        <button type="button" class="btn btn-primary" @click="submit">Submit</button>
+                        
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn btn-sm btn-light" @click="selectAll">Select All</button>
+                        <button type="button" class="btn btn-sm btn-primary" @click="submit">Submit</button>
                     </div>
                 </form>
             </div>
@@ -277,13 +298,17 @@
                         });
                     }
                 });
-
-                
             },
             clearSearch() {
                 this.vehicleDetails = this.vehicleParts = [];
                 this.searchFlag = 0;
                 this.csNo = "";
+            },
+            selectAll(){
+                $(".cb_parts").trigger('click');
+                for(var i = 0; i < this.vehicleParts.length; i++){
+                    this.vehicleParts[i].checked_flag = true;
+                }
             }
         },
         created: function () {

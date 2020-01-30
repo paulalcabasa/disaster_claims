@@ -19,12 +19,20 @@ class Vehicle extends Model
                         msib.attribute9                                 sales_model,
                         msib.attribute29                                vehicle_type,
                         msn.attribute2 vin_no,
-                        dm.model_id
+                        dm.model_id,
+                        rcta.trx_number,
+                        cust.account_name,
+                        cust.party_name customer_name,
+                        TO_CHAR(TO_DATE(replace(rcta.attribute5,' ',''),'YYYY/MM/DD HH24:MI:SS'),'MM/DD/YYYY') pullout_date
                 FROM mtl_serial_numbers msn
                     LEFT JOIN mtl_system_items_b msib
                         ON msn.inventory_item_id = msib.inventory_item_id
                     LEFT JOIN ipc.ipc_dcm_models dm
                         ON dm.model_name = msib.attribute9
+                    LEFT JOIN ra_customer_trx_all rcta
+                        ON rcta.attribute3 = msn.serial_number
+                    LEFT JOIN ipc_dms.oracle_customers_v cust
+                        ON CUST.SITE_USE_ID = rcta.bill_to_site_use_id
                 WHERE 1 = 1
                     AND msib.organization_id IN (121)
                         AND msib.inventory_item_status_code = 'Active'
@@ -32,10 +40,12 @@ class Vehicle extends Model
                         AND msib.item_type = 'FG'
                         AND msn.serial_number = :cs_no
                         AND msn.serial_number IN (SELECT cs_number FROM ipc.ipc_dcm_affected_units)
-                        AND msn.serial_number NOT IN (SELECT cs_no FROM ipc.ipc_dcm_claim_header)";
+                        AND msn.serial_number NOT IN (SELECT cs_no FROM ipc.ipc_dcm_claim_header)
+                        AND rcta.sold_to_customer_id = :customer_id";
         
         $params = [
-            'cs_no' => $cs_no
+            'cs_no' => $cs_no,
+            'customer_id' => session('user')['customer_id']
         ];
 
         $query = DB::select($sql,$params);
@@ -56,17 +66,64 @@ class Vehicle extends Model
                         msib.attribute9                                 sales_model,
                         msib.attribute29                                vehicle_type,
                         msn.attribute2 vin_no,
-                        afu.location
+                        afu.location,
+                        TO_CHAR(TO_DATE(replace(rcta.pullout_date,' ',''),'YYYY/MM/DD HH24:MI:SS'),'MM/DD/YYYY') pullout_date,
+                        cust.account_name,
+                        to_char(rs.declare_date,'MM/DD/YYYY') retail_sale_date
                 FROM ipc.ipc_dcm_affected_units afu
                     LEFT JOIN mtl_serial_numbers msn
                         ON msn.serial_number = AFU.CS_NUMBER
                     LEFT JOIN mtl_system_items_b msib
                         ON msn.inventory_item_id = msib.inventory_item_id
                         AND msn.current_organization_id = msib.organization_id
+                    LEFT JOIN (SELECT rct.trx_number, 
+                                        rct.trx_date, 
+                                        rct.attribute3 cs_number, 
+                                        rct.attribute5 pullout_date, 
+                                        rct.sold_to_customer_id,
+                                        rct.bill_to_site_use_id
+                                    FROM ra_customer_trx_all rct
+                                        LEFT JOIN ipc_vehicle_cm cm
+                                            ON rct.customer_trx_id = cm.orig_trx_id
+                                            and cm.CM_TRX_TYPE_ID != 10081
+                                       
+                                    WHERE 1 = 1 
+                                    AND cm.orig_trx_id IS NULL 
+                                    AND rct.cust_trx_type_id = 1002
+                        ) rcta
+                            ON afu.cs_number = rcta.cs_number
+                       LEFT JOIN ipc_dms.oracle_customers_v cust
+                                            ON cust.site_use_id = rcta.bill_to_site_use_id
+                        left join ipc_dms.crms_retail_sales rs
+                                  on rs.cs_no = afu.cs_number
                 WHERE 1 = 1
                     AND msn.c_attribute30 IS NULL";
         $query = DB::select($sql);  
         return $query;
     }
 
+    public function getStatistics(){
+        $sql = "SELECT count(afu.id) affected_units,
+                        sum(case when CH.CLAIM_HEADER_ID is not null then 1 else 0 end) claims,
+                        sum(case when rcta.trx_number is not null then 1 else 0 end) invoiced,
+                        sum(case when rs.cs_no is not null then 1 else 0 end) retail_sales
+                FROM ipc.ipc_dcm_affected_units  afu
+                        left join ipc.ipc_dcm_claim_header ch
+                            on afu.cs_number  = ch.cs_no
+                    left join (SELECT rct.trx_number, rct.trx_date, rct.attribute3 cs_number, rct.attribute5 pullout_date, sold_to_customer_id
+                                        FROM ra_customer_trx_all rct
+                                            LEFT JOIN ipc_vehicle_cm cm
+                                                ON rct.customer_trx_id = cm.orig_trx_id
+                                                and cm.CM_TRX_TYPE_ID != 10081
+                                        WHERE 1 = 1 
+                                        AND cm.orig_trx_id IS NULL 
+                                        AND rct.cust_trx_type_id = 1002
+                        ) rcta
+                            ON afu.cs_number = rcta.cs_number
+                    left join ipc_dms.crms_retail_sales rs
+                        on rs.cs_no = afu.cs_number";
+        $query = DB::select($sql);  
+        $data =  !empty($query) ? $query[0] : $query;
+        return response()->json($data);
+    }
 }

@@ -28,7 +28,13 @@
 	<script src="{{ asset('global_assets/js/plugins/notifications/sweet_alert.min.js') }}"></script>
 	<script src="{{ asset('global_assets/js/plugins/forms/selects/select2.min.js') }}"></script>
 	<script src="{{ asset('global_assets/js/plugins/tables/datatables/datatables.min.js') }}"></script>
+
+	<script src="{{ asset('global_assets/js/plugins/tables/datatables/extensions/jszip/jszip.min.js') }}"></script>
+	<script src="{{ asset('global_assets/js/plugins/tables/datatables/extensions/pdfmake/pdfmake.min.js') }}"></script>
+	<script src="{{ asset('global_assets/js/plugins/tables/datatables/extensions/pdfmake/vfs_fonts.min.js') }}"></script>
+	<script src="{{ asset('global_assets/js/plugins/tables/datatables/extensions/buttons.min.js') }}"></script>
 	<!-- Theme JS files -->
+
 	<script src="{{ asset('assets/js/app.js') }}"></script>
 	
 	<script src="{{ asset('public/js/app.js') }}"></script>

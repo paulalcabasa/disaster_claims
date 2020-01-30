@@ -4,13 +4,76 @@
 @section('content')
 <!-- Basic table -->
 <div id="app">
+
+
+    <div class="row">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card card-body bg-success-400 has-bg-image">
+                <div class="media">
+                    <div class="media-body">
+                        <h3 class="mb-0">@{{ formatNumber(stats.claims) }} / @{{ formatNumber(stats.affected_units) }}</h3>
+                        <span class="text-uppercase font-size-xs">claimed</span>
+                    </div>
+                    <div class="ml-3 align-self-center">
+                        <i class="icon-thumbs-up2  icon-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card card-body bg-danger-400 has-bg-image">
+                <div class="media">
+                    <div class="media-body">
+                        <h3 class="mb-0">@{{ formatNumber(unclaimed) }}</h3>
+                        <span class="text-uppercase font-size-xs">unclaimed</span>
+                    </div>
+                    <div class="ml-3 align-self-center">
+                        <i class="icon-wrench2 icon-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card card-body bg-info-400 has-bg-image">
+                <div class="media">
+                    <div class="mr-3 align-self-center">
+                        <i class="icon-cart5 icon-3x opacity-75"></i>
+                    </div>
+
+                    <div class="media-body text-right">
+                        <h3 class="mb-0">@{{ formatNumber(stats.invoiced) }}</h3>
+                        <span class="text-uppercase font-size-xs">Invoiced</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card card-body bg-indigo-400 has-bg-image">
+                <div class="media">
+                    <div class="mr-3 align-self-center">
+                        <i class="icon-coins icon-3x opacity-75"></i>
+                    </div>
+
+                    <div class="media-body text-right">
+                        <h3 class="mb-0">@{{ stats.retail_sales }}</h3>
+                        <span class="text-uppercase font-size-xs">retail sales</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+
+    </div>
+                
     <div class="card">
         <div class="card-header header-elements-inline">
             <h5 class="card-title">List of submitted claims </h5>
             
         </div>
-        <div class="card-body">
-        </div>
+       
         <table class="table" id="list">
             <thead>
                 <tr>
@@ -149,72 +212,21 @@
             curClaim : {
                 claimDetails : [],
                 parts : []
-            }
+            },
+            stats : []
         },
         created: function () {
-            var self = this;
-            axios.get('claims/get-all')
-                .then( (response) => {
-                    self.list = response.data;
-                }).catch( (error) => {
-                    console.log(error);
-                }).finally( () => {
-                    
-                    // Setting datatable defaults
-                    $.extend( $.fn.dataTable.defaults, {
-                        autoWidth: false,
-                        columnDefs: [{ 
-                            orderable: false,
-                            width: 100,
-                            targets: [ 5 ]
-                        }],
-                        dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
-                        language: {
-                            search: '<span>Filter:</span> _INPUT_',
-                            searchPlaceholder: 'Type to filter...',
-                            lengthMenu: '<span>Show:</span> _MENU_',
-                            paginate: { 'first': 'First', 'last': 'Last', 'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;', 'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;' }
-                        }
-                    });
-
-                    // Basic datatable
-                    $('#list').DataTable();
-
-                    // Alternative pagination
-                    $('.datatable-pagination').DataTable({
-                        pagingType: "simple",
-                        language: {
-                            paginate: {'next': $('html').attr('dir') == 'rtl' ? 'Next &larr;' : 'Next &rarr;', 'previous': $('html').attr('dir') == 'rtl' ? '&rarr; Prev' : '&larr; Prev'}
-                        }
-                    });
-                    // Datatable with saving state
-                    $('.datatable-save-state').DataTable({
-                        stateSave: true
-                    });
-
-                    // Scrollable datatable
-                 /*    var table = $('.datatable-scroll-y').DataTable({
-                        autoWidth: true,
-                        scrollY: 300
-                    }); */
-
-                    // Resize scrollable table when sidebar width changes
-                    $('.sidebar-control').on('click', function() {
-                        table.columns.adjust().draw();
-                    });
-
-                    // Initialize
-                    $('.dataTables_length select').select2({
-                        minimumResultsForSearch: Infinity,
-                        dropdownAutoWidth: true,
-                        width: 'auto'
-                    });
-
-                });
+            this.getStats();
+            this.getClaims();
         },
         mounted : function () {
            // Initialize plugin
            
+        },
+        computed : {
+            unclaimed : function(){
+                return parseInt(this.stats.affected_units) - parseInt(this.stats.claims);
+            }
         },
         methods :{
             viewDetails(claimHeaderId){
@@ -238,8 +250,100 @@
                     .finally( () => {
 
                     });
+            },
+            getStats(){
+                var self = this;
+                self.blockPage();
+                axios.get('claims/stats')
+                    .then( (response) => {
+                        self.stats = response.data;
+                    })
+                    .catch( (error) => {
+                        console.log(error);
+                    })
+                    .finally( () => {
+                        self.unblockPage();
+                    });
+            },
+            getClaims(){
+                var self = this;
+                axios.get('claims/get-all')
+                    .then( (response) => {
+                        self.list = response.data;
+                    }).catch( (error) => {
+                        console.log(error);
+                    }).finally( () => {
+                        
+                        // Setting datatable defaults
+                        $.extend( $.fn.dataTable.defaults, {
+                            autoWidth: false,
+                            columnDefs: [{ 
+                                orderable: false,
+                                width: 100,
+                                targets: [ 5 ]
+                            }],
+                            dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
+                            language: {
+                                search: '<span>Filter:</span> _INPUT_',
+                                searchPlaceholder: 'Type to filter...',
+                                lengthMenu: '<span>Show:</span> _MENU_',
+                                paginate: { 'first': 'First', 'last': 'Last', 'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;', 'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;' }
+                            }
+                        });
+
+                        // Basic datatable
+                        $('#list').DataTable();
+
+                        // Alternative pagination
+                        $('.datatable-pagination').DataTable({
+                            pagingType: "simple",
+                            language: {
+                                paginate: {'next': $('html').attr('dir') == 'rtl' ? 'Next &larr;' : 'Next &rarr;', 'previous': $('html').attr('dir') == 'rtl' ? '&rarr; Prev' : '&larr; Prev'}
+                            }
+                        });
+                        // Datatable with saving state
+                        $('.datatable-save-state').DataTable({
+                            stateSave: true
+                        });
+
+                        // Resize scrollable table when sidebar width changes
+                        $('.sidebar-control').on('click', function() {
+                            table.columns.adjust().draw();
+                        });
+
+                        // Initialize
+                        $('.dataTables_length select').select2({
+                            minimumResultsForSearch: Infinity,
+                            dropdownAutoWidth: true,
+                            width: 'auto'
+                        });
+
+                    });
+            },
+            blockPage() {
+                $.blockUI({ 
+                    message: '<i class="icon-spinner4 spinner"></i>',
+                    overlayCSS: {
+                        backgroundColor: '#1b2024',
+                        opacity: 0.8,
+                        cursor: 'wait'
+                    },
+                    css: {
+                        border: 0,
+                        color: '#fff',
+                        padding: 0,
+                        backgroundColor: 'transparent'
+                    }
+                });
+            },
+            unblockPage(){
+                 $.unblockUI();
+            },
+            formatNumber(value){
+                return Number(value).toLocaleString();//(parseFloat(value).toFixed(1).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
             }
-        }
+        },
+        
 
     });
 

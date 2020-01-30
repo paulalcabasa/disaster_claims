@@ -4,6 +4,8 @@
 @section('content')
 <!-- Basic table -->
 <div id="app">
+
+    
     <div class="card">
         <div class="card-header header-elements-inline">
             <h5 class="card-title">List of submitted claims </h5>

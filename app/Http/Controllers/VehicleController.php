@@ -19,6 +19,16 @@ class VehicleController extends Controller
         return $vehicle->getAffectedUnits();
     }
 
+    public function affectedUnits(){
+        $vehicle = new Vehicle;
+        $units = $vehicle->getAffectedUnits();
+        $data = [
+            'units' => $units
+        ];
+        return view('admin.affected_units_list',$data);
+      
+    }
+
     
 
 }

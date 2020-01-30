@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\ClaimHeader;
 use App\Models\ClaimLines;
 use Carbon\Carbon;
+use App\Models\Vehicle;
 use DB;
 class ClaimsController extends Controller
 {
@@ -77,5 +78,10 @@ class ClaimsController extends Controller
             'claimDetails' => $header,
             'parts'  => $parts
         ];
+    }
+
+    public function getStatistics(){
+        $vehicle = new  Vehicle;
+        return $vehicle->getStatistics();
     }
 }
