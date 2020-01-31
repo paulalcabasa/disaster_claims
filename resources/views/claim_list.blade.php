@@ -20,6 +20,7 @@
                     <th>CS No.</th>
                     <th>Model</th>
                     <th>Variant</th>
+                    <th>Requested Parts</th>
                     <th>Date Submitted</th>
                     <th>Actions</th>
                 </tr>
@@ -31,6 +32,7 @@
                     <td>{{ $row->cs_no }}</td>
                     <td>{{ $row->model }}</td>
                     <td>{{ $row->variant }}</td>
+                    <td>{{ $row->parts }}</td>
                     <td>{{ $row->creation_date }}</td>
                     <td class="text-center">
                         <div class="list-icons">

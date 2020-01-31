@@ -63,10 +63,12 @@ class ClaimsController extends Controller
     }
 
     public function getAllClaims(){
-       
         $claimHeader = new ClaimHeader;       
         $data = $claimHeader->getAllClaims();
-        return $data;
+        $data = [
+            'claims' => $data
+        ];
+        return view('admin.claims',$data);
     }
 
     public function show(Request $request){

@@ -82,18 +82,21 @@
                     <th>CS No.</th>
                     <th>Model</th>
                     <th>Variant</th>
+                    <th>Requested Parts</th>
                     <th>Date Submitted</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="row in list">
-                    <td>@{{ row.claim_header_id }}</td>
-                    <td>@{{ row.account_name }}</td>
-                    <td>@{{ row.cs_no }}</td>
-                    <td>@{{ row.model }}</td>
-                    <td>@{{ row.variant }}</td>
-                    <td>@{{ row.creation_date }}</td>
+                @foreach($claims as $row)
+                <tr>
+                    <td>{{ $row->claim_header_id }}</td>
+                    <td>{{ $row->account_name }}</td>
+                    <td>{{ $row->cs_no }}</td>
+                    <td>{{ $row->model }}</td>
+                    <td>{{ $row->variant }}</td>
+                    <td>{{ $row->parts }}</td>
+                    <td>{{ $row->creation_date }}</td>
                     <td class="text-center">
                         <div class="list-icons">
                             <div class="dropdown">
@@ -102,7 +105,7 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right">
-                                    <a href="#" class="dropdown-item" @click.prevent="viewDetails(row.claim_header_id)"><i class="icon-file-text"></i> View details</a>
+                                    <a href="#" class="dropdown-item" @click.prevent="viewDetails({{ $row->claim_header_id }})"><i class="icon-file-text"></i> View details</a>
                                  <!--    <a href="#" class="dropdown-item"><i class="icon-file-excel"></i> Export to .csv</a>
                                     <a href="#" class="dropdown-item"><i class="icon-file-word"></i> Export to .doc</a> -->
                                 </div>
@@ -110,6 +113,7 @@
                         </div>
                     </td>
                 </tr>
+                @endforeach
             </tbody>
         </table> 
     </div>
@@ -205,6 +209,88 @@
         cancelButtonClass: 'btn btn-light'
     });
 
+     var DatatableButtonsHtml5 = function() {
+
+
+        //
+        // Setup module components
+        //
+
+        // Basic Datatable examples
+        var _componentDatatableButtonsHtml5 = function() {
+            if (!$().DataTable) {
+                console.warn('Warning - datatables.min.js is not loaded.');
+                return;
+            }
+
+            // Setting datatable defaults
+            $.extend( $.fn.dataTable.defaults, {
+                autoWidth: false,
+                dom: '<"datatable-header"fBl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
+                language: {
+                    search: '<span>Filter:</span> _INPUT_',
+                    searchPlaceholder: 'Type to filter...',
+                    lengthMenu: '<span>Show:</span> _MENU_',
+                    paginate: { 'first': 'First', 'last': 'Last', 'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;', 'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;' }
+                }
+            });
+
+
+            // Basic initialization
+            $('#list').DataTable({
+                buttons: {            
+                    dom: {
+                        button: {
+                            className: 'btn btn-light'
+                        }
+                    },
+                    buttons: [
+                        'excelHtml5',
+                        'csvHtml5',
+                    ]
+                },
+                scrollX : true
+            });
+
+        };
+
+        // Select2 for length menu styling
+        var _componentSelect2 = function() {
+            if (!$().select2) {
+                console.warn('Warning - select2.min.js is not loaded.');
+                return;
+            }
+
+            // Initialize
+            $('.dataTables_length select').select2({
+                minimumResultsForSearch: Infinity,
+                dropdownAutoWidth: true,
+                width: 'auto'
+            });
+        };
+
+
+        //
+        // Return objects assigned to module
+        //
+
+        return {
+            init: function() {
+                _componentDatatableButtonsHtml5();
+                _componentSelect2();
+            }
+        }
+    }();
+
+        // Initialize module
+    // ------------------------------
+
+    document.addEventListener('DOMContentLoaded', function() {
+        DatatableButtonsHtml5.init();
+    });
+
+
+
     var vm =  new Vue({
         el : "#app",
         data: {
@@ -217,7 +303,7 @@
         },
         created: function () {
             this.getStats();
-            this.getClaims();
+           // this.getClaims();
         },
         mounted : function () {
            // Initialize plugin

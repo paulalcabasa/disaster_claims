@@ -17,19 +17,30 @@ class ClaimHeader extends Model
                         ch.cs_no,
                         msib.attribute9 variant,
                         ipc_dms.ipc_get_vehicle_variant (msib.segment1) model,
-                        to_char(ch.creation_date,'mm/dd/yyyy') creation_date
+                        to_char(ch.creation_date,'mm/dd/yyyy') creation_date,
+                        LISTAGG(parts.description, ', ') WITHIN GROUP (ORDER BY parts.description) parts
                 FROM ipc.ipc_dcm_claim_header ch
                     LEFT join mtl_serial_numbers msn
                         ON ch.cs_no = msn.serial_number
                     LEFT JOIN mtl_system_items_b msib
                         ON msn.inventory_item_id = msib.inventory_item_id
+                    LEFT JOIN ipc.ipc_dcm_claim_lines cl
+                        ON cl.claim_header_id = ch.claim_header_id
+                    LEFT JOIN  ipc.ipc_dcm_model_parts parts
+                        ON parts.part_id = cl.part_id
                 WHERE 1 = 1
                     AND ch.customer_id = :customer_id
+                    AND ch.claim_header_id = 19
                     AND msib.organization_id IN (121)
                     AND msib.inventory_item_status_code = 'Active'
                     AND msib.attribute9 IS NOT NULL
                     AND msib.item_type = 'FG'
-                ";
+                GROUP BY
+                    ch.claim_header_id,
+                    ch.cs_no,
+                    msib.attribute9 ,
+                    msib.segment1,
+                    ch.creation_date";
         
         $params = [
             'customer_id' => $customer_id
@@ -46,7 +57,8 @@ class ClaimHeader extends Model
                         ipc_dms.ipc_get_vehicle_variant (msib.segment1) model,
                         to_char(ch.creation_date,'mm/dd/yyyy') creation_date,
                         cust.party_name customer_name,
-                        cust.account_name
+                        cust.account_name,
+                        LISTAGG(parts.description, ', ') WITHIN GROUP (ORDER BY parts.description) parts
                 FROM ipc.ipc_dcm_claim_header ch
                     LEFT join mtl_serial_numbers msn
                         ON ch.cs_no = msn.serial_number
@@ -55,11 +67,23 @@ class ClaimHeader extends Model
                     LEFT JOIN ipc_dms.oracle_customers_v cust
                         ON cust.cust_account_id = ch.customer_id
                         AND cust.profile_class = 'Dealers-Vehicle'
+                    LEFT JOIN ipc.ipc_dcm_claim_lines cl
+                        ON cl.claim_header_id = ch.claim_header_id
+                    LEFT JOIN  ipc.ipc_dcm_model_parts parts
+                        ON parts.part_id = cl.part_id
                 WHERE 1 = 1
                     AND msib.organization_id IN (121)
                     AND msib.inventory_item_status_code = 'Active'
                     AND msib.attribute9 IS NOT NULL
                     AND msib.item_type = 'FG'
+                GROUP BY
+                    ch.claim_header_id,
+                    ch.cs_no,
+                    msib.attribute9 ,
+                    msib.segment1,
+                    ch.creation_date,
+                    cust.account_name,
+                    cust.party_name
                 ";
     
         $query = DB::select($sql);

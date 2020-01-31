@@ -30,10 +30,10 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('claims/get','ClaimsController@getClaims');
 	Route::get('claims/get/{claim_header_id}','ClaimsController@show');
 
-
 	// admin
-	Route::view('admin/claim-list','admin.claims')->name('admin-claims');
-	Route::get('admin/claims/get-all','ClaimsController@getAllClaims');
+//	Route::view('admin/claim-list','admin.claims')->name('admin-claims');
+	Route::get('admin/claim-list','ClaimsController@getAllClaims')->name('admin-claims');
+	//Route::get('admin/claims/get-all','ClaimsController@getAllClaims');
 	//Route::view('admin/affected-units-list', 'admin.affected_units_list')->name('affected-units-list');
 	Route::get('admin/affected-units-list', 'VehicleController@affectedUnits')->name('affected-units-list');
 	Route::get('admin/claims/get/{claim_header_id}','ClaimsController@show');
