@@ -84,4 +84,13 @@ class ClaimsController extends Controller
         $vehicle = new  Vehicle;
         return $vehicle->getStatistics();
     }
+
+    public function getDealerClaims(){
+        $claimHeader = new ClaimHeader;       
+        $data = $claimHeader->getDealerClaims(session('user')['customer_id']);
+        $data = [
+            'claims' => $data
+        ];
+        return view('claim_list',$data);
+    }
 }

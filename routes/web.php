@@ -20,7 +20,8 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 
 	// user
 	Route::view('claim-entry', 'claim_entry')->name('claim-entry'); //->name('dashboard');
-	Route::view('claim-list', 'claim_list')->name('claim-list'); //->name('dashboard');
+	//Route::view('claim-list', 'claim_list')->name('claim-list'); //->name('dashboard');
+	Route::get('claim-list', 'ClaimsController@getDealerClaims')->name('claim-list'); //->name('dashboard');
 
 	Route::get('vehicle/search/{cs_no}','VehicleController@get');
 	Route::get('parts/get/{model_id}','ModelPartsController@get');
