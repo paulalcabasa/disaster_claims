@@ -28,7 +28,7 @@ class Vehicle extends Model
                     LEFT JOIN mtl_system_items_b msib
                         ON msn.inventory_item_id = msib.inventory_item_id
                     LEFT JOIN ipc.ipc_dcm_models dm
-                        ON dm.model_name = msib.attribute9
+                        ON upper(dm.model_name) = upper(msib.attribute9)
                     LEFT JOIN ra_customer_trx_all rcta
                         ON rcta.attribute3 = msn.serial_number
                     LEFT JOIN ipc_dms.oracle_customers_v cust
