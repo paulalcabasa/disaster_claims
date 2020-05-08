@@ -41,6 +41,8 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::view('admin/models','admin.models')->name('models');
 	Route::get('admin/models/get','ModelPartsController@getModelParts');
 	Route::get('admin/claims/stats','ClaimsController@getStatistics');
+
+	Route::get('unclaimed-list','ClaimsController@unclaimed')->name('unclaimed-list');
 	
 });
 

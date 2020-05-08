@@ -5,7 +5,37 @@
 <!-- Basic table -->
 <div id="app">
 
-    
+        <div class="row">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card card-body bg-success-400 has-bg-image">
+                <div class="media">
+                    <div class="media-body">
+                        <h3 class="mb-0">@{{ stats.original.claims }}</h3>
+                        <span class="text-uppercase font-size-xs">claimed</span>
+                    </div>
+                    <div class="ml-3 align-self-center">
+                        <i class="icon-thumbs-up2  icon-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card card-body bg-danger-400 has-bg-image">
+                <div class="media">
+                    <div class="media-body">
+                        <h3 class="mb-0">@{{ (stats.original.affected_units -  stats.original.claims) }}</h3>
+                        <span class="text-uppercase font-size-xs">unclaimed</span>
+                    </div>
+                    <div class="ml-3 align-self-center">
+                        <i class="icon-wrench2 icon-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <div class="card">
         <div class="card-header header-elements-inline">
             <h5 class="card-title">List of submitted claims </h5>
@@ -232,7 +262,7 @@
     var vm =  new Vue({
         el : "#app",
         data: {
-            //list : {!! json_encode($claims) !!},
+            stats : {!! json_encode($stats)!!},
             curClaim : {
                 claimDetails : [],
                 parts : []

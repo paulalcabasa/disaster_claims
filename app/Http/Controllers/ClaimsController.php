@@ -88,11 +88,23 @@ class ClaimsController extends Controller
     }
 
     public function getDealerClaims(){
-        $claimHeader = new ClaimHeader;       
+        $claimHeader = new ClaimHeader; 
+        $vehicle = new Vehicle;      
         $data = $claimHeader->getDealerClaims(session('user')['customer_id']);
+        $stats = $vehicle->getStatistics(session('user')['customer_id']);
         $data = [
-            'claims' => $data
+            'claims' => $data,
+            'stats' => $stats
         ];
         return view('claim_list',$data);
+    }
+
+    public function unclaimed(){
+        $vehicle = new Vehicle;       
+        $data = $vehicle->getAllUnclaimed(session('user')['customer_id']);
+        $data = [
+            'unclaimed' => $data
+        ];
+        return view('unclaimed',$data);
     }
 }

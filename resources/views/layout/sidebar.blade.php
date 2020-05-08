@@ -42,31 +42,15 @@
 									<span>My profile</span>
 								</a>
 							</li>
-							<li class="nav-item">
-								<a href="#" class="nav-link">
-									<i class="icon-coins"></i>
-									<span>My balance</span>
-								</a>
-							</li>
-							<li class="nav-item">
-								<a href="#" class="nav-link">
-									<i class="icon-comment-discussion"></i>
-									<span>Messages</span>
-									<span class="badge bg-teal-400 badge-pill align-self-center ml-auto">58</span>
-								</a>
-							</li>
+							
+						
 							<li class="nav-item">
 								<a href="#" class="nav-link">
 									<i class="icon-cog5"></i>
 									<span>Account settings</span>
 								</a>
 							</li>
-							<li class="nav-item">
-								<a href="#" class="nav-link">
-									<i class="icon-switch2"></i>
-									<span>Logout</span>
-								</a>
-							</li>
+							
 						</ul>
 					</div>
 				</div>
@@ -87,21 +71,31 @@
 								<span>Entry</span>
 							</a>
 						</li>
-						<li class="nav-item">
-							<a href="{{ route('claim-list') }}" class="nav-link">
-								<i class="icon-list-unordered"></i>
-								<span>List</span>
-							</a>
+			
+						<li class="nav-item nav-item-submenu nav-item-open">
+							<a href="#" class="nav-link"><i class="icon-list-unordered"></i> <span>List</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Pickers" style="display: block;">
+								<li class="nav-item"><a href="{{ route('claim-list') }}" class="nav-link">Claimed</a></li>
+								<li class="nav-item"><a href="{{ route('unclaimed-list') }}" class="nav-link">Unclaimed</a></li>
+							</ul>
 						</li>
+					
 						@endif 
 						
 						@if(in_array(session('user')['user_type_id'], array(43)))
 						<li class="nav-item-header"><div class="text-uppercase font-size-xs line-height-xs">CLAIMS</div> <i class="icon-menu" title="Main"></i></li>
-						<li class="nav-item">
+						<!-- <li class="nav-item">
 							<a href="{{ route('admin-claims') }}" class="nav-link">
 								<i class="icon-list-unordered"></i>
 								<span>List</span>
 							</a>
+						</li> -->
+						<li class="nav-item nav-item-submenu nav-item-open">
+							<a href="#" class="nav-link"><i class="icon-list-unordered"></i> <span>List</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Pickers" style="display: block;">
+								<li class="nav-item"><a href="{{ route('admin-claims') }}" class="nav-link">Claimed</a></li>
+								<li class="nav-item"><a href="{{ route('unclaimed-list') }}" class="nav-link">Unclaimed</a></li>
+							</ul>
 						</li>
 						<li class="nav-item-header"><div class="text-uppercase font-size-xs line-height-xs">UNITS</div> <i class="icon-menu" title="Main"></i></li>
 						<li class="nav-item">
