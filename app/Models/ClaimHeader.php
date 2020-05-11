@@ -30,7 +30,6 @@ class ClaimHeader extends Model
                         ON parts.part_id = cl.part_id
                 WHERE 1 = 1
                     AND ch.customer_id = :customer_id
-                    AND ch.claim_header_id = 19
                     AND msib.organization_id IN (121)
                     AND msib.inventory_item_status_code = 'Active'
                     AND msib.attribute9 IS NOT NULL

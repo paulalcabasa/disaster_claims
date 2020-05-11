@@ -43,7 +43,7 @@
         </div>
         <div class="card-body">
         </div>
-        <table class="table" id="list">
+        <table class="table" id="list" >
             <thead>
                 <tr>
                     <th>Ref No.</th>
@@ -56,7 +56,9 @@
                 </tr>
             </thead>
             <tbody>
+
                 @foreach($claims as $row)
+
                 <tr>
                     <td>{{ $row->claim_header_id }}</td>
                     <td>{{ $row->cs_no }}</td>

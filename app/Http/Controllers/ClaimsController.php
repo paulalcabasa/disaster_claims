@@ -91,6 +91,7 @@ class ClaimsController extends Controller
         $claimHeader = new ClaimHeader; 
         $vehicle = new Vehicle;      
         $data = $claimHeader->getDealerClaims(session('user')['customer_id']);
+     
         $stats = $vehicle->getStatistics(session('user')['customer_id']);
         $data = [
             'claims' => $data,
