@@ -172,8 +172,11 @@ class Vehicle extends Model
                                             ON cust.site_use_id = rcta.bill_to_site_use_id
                         left join ipc_dms.crms_retail_sales rs
                                 on rs.cs_no = afu.cs_number
+                    LEFT JOIN ipc.ipc_dcm_claim_header ch
+                        ON ch.cs_no = afu.cs_number
                 WHERE 1 = 1
                     AND msn.c_attribute30 IS NULL
+                    AND ch.cs_no IS NULL
                     ".$where;
         $query = DB::select($sql);  
         return $query;
