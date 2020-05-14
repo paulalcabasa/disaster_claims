@@ -43,7 +43,7 @@
                             <label>Email</label>
                             <input type="text" v-model="user.email" class="form-control">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6" v-if="user_type == 42">
                             <label>Dealer</label>
                             <input type="text" :value="dealer.account_name" readonly="readonly" class="form-control">
                         </div>
@@ -128,6 +128,7 @@
             user : {!! json_encode($user) !!},
             credentials : {!! json_encode($credentials) !!},
             dealer : {!! json_encode($dealer) !!},
+            user_type : {!! json_encode($user_type) !!},
             new_password : '',
             repeat_password : ''
         },

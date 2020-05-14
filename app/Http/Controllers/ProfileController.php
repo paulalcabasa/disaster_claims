@@ -13,13 +13,22 @@ class ProfileController extends Controller
      
         $credentials = User::where('user_id', session('user')['user_id'])->first();
         $user_details = UserDetail::where('user_id', session('user')['user_id'])->first();
-        $dealer = Dealer::where('cust_account_id',session('user')['customer_id'])->first();
-       
+
+        if(session('user')['user_type_id'] == 42){
+            $dealer = Dealer::where('cust_account_id',session('user')['customer_id'])->first();
+        }
+        else {
+            $dealer = [
+                'account_name' => ''
+            ];
+        }
+
         $user = session('user');
         $data = [
             'user' => $user_details,
             'credentials' => $credentials,
-            'dealer' => $dealer
+            'dealer' => $dealer,
+            'user_type' => session('user')['user_type_id']
         ];
         return view('profile',$data);
     }
