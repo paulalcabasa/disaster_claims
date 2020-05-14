@@ -9,7 +9,7 @@ class User extends Authenticatable
     protected $connection = 'oracle_portal';
     protected $table = 'ipc_portal.users';
     protected $primaryKey = 'user_id';
-
+    const UPDATED_AT = 'date_updated';
     public function user_details()
     {
         return $this->hasOne('App\UserDetail', 'user_id', 'user_id');

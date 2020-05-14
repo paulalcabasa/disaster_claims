@@ -37,19 +37,13 @@
 					<div class="collapse" id="user-nav">
 						<ul class="nav nav-sidebar">
 							<li class="nav-item">
-								<a href="#" class="nav-link">
+								<a href="{{ route('profile') }}" class="nav-link">
 									<i class="icon-user-plus"></i>
 									<span>My profile</span>
 								</a>
 							</li>
 							
 						
-							<li class="nav-item">
-								<a href="#" class="nav-link">
-									<i class="icon-cog5"></i>
-									<span>Account settings</span>
-								</a>
-							</li>
 							
 						</ul>
 					</div>

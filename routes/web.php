@@ -44,6 +44,9 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 
 	Route::get('unclaimed-list','ClaimsController@unclaimed')->name('unclaimed-list');
 	
+	Route::get('profile','ProfileController@index')->name('profile');
+	Route::post('profile/update/details','ProfileController@updateDetails');
+	Route::post('profile/update/credentials','ProfileController@updateCredentials');
 });
 
 Route::get('login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');
