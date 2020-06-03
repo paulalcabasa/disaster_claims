@@ -14,6 +14,7 @@ class ProfileController extends Controller
         $credentials = User::where('user_id', session('user')['user_id'])->first();
         $user_details = UserDetail::where('user_id', session('user')['user_id'])->first();
 
+  
         if(session('user')['user_type_id'] == 42){
             $dealer = Dealer::where('cust_account_id',session('user')['customer_id'])->first();
         }

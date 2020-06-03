@@ -68,7 +68,7 @@ class Vehicle extends Model
                         msn.attribute2 vin_no,
                         afu.location,
                         TO_CHAR(TO_DATE(replace(rcta.pullout_date,' ',''),'YYYY/MM/DD HH24:MI:SS'),'MM/DD/YYYY') pullout_date,
-                        cust.account_name,
+                        nvl(cust.account_name,rcta.customer_name) account_name,
                         to_char(rs.declare_date,'MM/DD/YYYY') retail_sale_date
                 FROM ipc.ipc_dcm_affected_units afu
                     LEFT JOIN mtl_serial_numbers msn
@@ -81,12 +81,15 @@ class Vehicle extends Model
                                         rct.attribute3 cs_number, 
                                         rct.attribute5 pullout_date, 
                                         rct.sold_to_customer_id,
-                                        rct.bill_to_site_use_id
+                                        rct.bill_to_site_use_id,
+                                        
+                                        ac.customer_name
                                     FROM ra_customer_trx_all rct
                                         LEFT JOIN ipc_vehicle_cm cm
                                             ON rct.customer_trx_id = cm.orig_trx_id
                                             and cm.CM_TRX_TYPE_ID != 10081
-                                       
+                                        LEFT JOIN ar_customers ac
+                                         ON ac.customer_id = rct.sold_to_customer_id
                                     WHERE 1 = 1 
                                     AND cm.orig_trx_id IS NULL 
                                     AND rct.cust_trx_type_id = 1002
