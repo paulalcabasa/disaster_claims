@@ -47,6 +47,8 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('profile','ProfileController@index')->name('profile');
 	Route::post('profile/update/details','ProfileController@updateDetails');
 	Route::post('profile/update/credentials','ProfileController@updateCredentials');
+
+	Route::get('chrome','ModelPartsController@chromeMatrix')->name('chrome');
 });
 
 Route::get('login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');

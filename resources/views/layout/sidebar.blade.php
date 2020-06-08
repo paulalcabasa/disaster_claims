@@ -104,6 +104,12 @@
 								<span>Models</span>
 							</a>
 						</li>
+						<li class="nav-item">
+							<a href="{{ route('chrome') }}" class="nav-link">
+								<i class="icon-list-unordered"></i>
+								<span>Chrome Matrix</span>
+							</a>
+						</li>
 						@endif 
 						<!-- /main -->
 
