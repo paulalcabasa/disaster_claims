@@ -94,17 +94,28 @@
 
             // Basic initialization
             $('.datatable-button-html5-basic').DataTable({
-                buttons: {            
+               /*  buttons: {            
                     dom: {
                         button: {
-                            className: 'btn btn-light'
+                            className: 'btn btn-light',
+                            
+                            title: 'Data export'
                         }
                     },
                     buttons: [
                         'excelHtml5',
                         'csvHtml5',
                     ]
-                },
+                }, */
+
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        className: 'btn btn-light',
+                        title: 'Taal Ashfall Affected Units'
+                    }
+                ],
                 scrollX : true
             });
 
