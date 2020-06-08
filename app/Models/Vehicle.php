@@ -63,10 +63,12 @@ class Vehicle extends Model
                         NVL (msib.attribute8, 'NO COLOR')               color,
                         msib.segment1                                   prod_model,
                         msib.description                                prod_model_desc,
-                        msib.attribute9                                 sales_model,
+                        CASE WHEN msib.organization_id = 88 THEN 
+                            (SELECT attribute9 FROM mtl_system_items_b WHERE inventory_item_id = msib.inventory_item_id AND organization_id = 121) 
+                        ELSE msib.attribute9 END  sales_model,
                         msib.attribute29                                vehicle_type,
                         msn.attribute2 vin_no,
-                        afu.location,
+                       (CASE WHEN ipc_dms.ipc_get_vehicle_variant (msib.segment1) IN ('MU-X','D-MAX') AND msib.organization_id = 88 THEN 'IPC' ELSE NVL(ato.location, msn.c_attribute29) END) location,
                         TO_CHAR(TO_DATE(replace(rcta.pullout_date,' ',''),'YYYY/MM/DD HH24:MI:SS'),'MM/DD/YYYY') pullout_date,
                         nvl(cust.account_name,rcta.customer_name) account_name,
                         to_char(rs.declare_date,'MM/DD/YYYY') retail_sale_date
@@ -99,6 +101,17 @@ class Vehicle extends Model
                                             ON cust.site_use_id = rcta.bill_to_site_use_id
                         left join ipc_dms.crms_retail_sales rs
                                   on rs.cs_no = afu.cs_number
+                        LEFT JOIN (SELECT cs_number,
+                            destination_to location 
+                            FROM (
+                                SELECT cs_number,
+                                        destination_to,
+                                        transfer_date,
+                                        RANK ()  OVER (PARTITION BY cs_number ORDER BY transfer_date DESC, date_created DESC) rnk
+                                    FROM ipc.ipc_vehicle_ato ato
+                                    WHERE     1 = 1)
+                            WHERE rnk = 1) ato
+                            ON ato.cs_number = afu.cs_number
                 WHERE 1 = 1
                     AND msn.c_attribute30 IS NULL";
         $query = DB::select($sql);  
