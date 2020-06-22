@@ -27,21 +27,25 @@ class ModelPartsController extends Controller
     }
 
     public function getModelParts() {
-       $sql = "SELECT mdl.model_name,
-                      mp.description part_description
-                FROM ipc.ipc_dcm_models mdl
-                    LEFT JOIN ipc.ipc_dcm_model_parts mp
-                    ON mp.model_id = mdl.model_id";
-
+       $sql = "SELECT mdl.model_id,
+                        mdl.model_name
+                FROM ipc.ipc_dcm_models mdl";
         $query = DB::select($sql);
 
         return $query;
 
     }
 
+    public function getParts(Request $request){
+        $modelParts = new ModelParts;
+        $parts = $modelParts->getParts($request->model_id);
+        return response()->json($parts,200);
+    }
+
     public function chromeMatrix(){
         $data = [];
-        $parts = ModelParts::distinct()->get(['description']);
+        $parts = ModelParts::distinct()
+                ->where('status','A')->get(['description']);
         $vehicles = VehicleModel::all();
 
        
@@ -79,6 +83,64 @@ class ModelPartsController extends Controller
         ];
 
         return view('chrome_matrix',$data);
+    }
+
+    public function store(Request $request){
+        $model  = $request->model;
+        $parts = $request->parts;
+
+         DB::beginTransaction();
+
+        try {
+            
+
+            foreach($parts as $part){
+                if($part['delete_flag'] == 'Y'){
+                    // delete
+                    $modelParts = ModelParts::find($part['part_id']);
+                    $modelParts->status = 'I';
+                    $modelParts->updated_by =  session('user')['user_id'];
+                    $modelParts->update_user_source = session('user')['source_id'];
+                    $modelParts->save();
+                }
+                if($part['part_id'] != ""){
+                    // update
+                    $modelParts = ModelParts::find($part['part_id']);
+                    $modelParts->description = $part['description'];
+                    if($part['delete_flag'] == 'Y'){
+                        $modelParts->status = 'I';
+                    }
+                    $modelParts->updated_by =  session('user')['user_id'];
+                    $modelParts->update_user_source = session('user')['source_id'];
+                    $modelParts->save();
+                }
+                else {
+                    // insert
+                    $modelParts = new ModelParts;
+                    $modelParts->description = $part['description'];
+                    $modelParts->model_id = $model['model_id'];
+                    $modelParts->created_by =  session('user')['user_id'];
+                    $modelParts->create_user_source = session('user')['source_id'];
+                    $modelParts->save();
+                }
+            }
+            DB::commit();
+            return [
+                'message'  => 'Parts has been updated.',
+                'error'    => false
+            ];
+        } catch(\Exception $e) {
+            DB::rollBack();
+            return [
+                'message'  => 'Error :' . $e,
+                'error'    => true
+            ];
+
+        }
+        return response()->json([
+            $model,
+            $parts
+        ]);
     }
 
 }

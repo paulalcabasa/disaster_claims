@@ -14,18 +14,65 @@
         <table class="table" id="list">
             <thead>
                 <tr>
-                    <th>Model</th>
-                    <th>Part Description</th>
+                    <th>Model ID</th>
+                    <th>Model Name</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="row in list">
+                    <td>@{{ row.model_id }}</td>
                     <td>@{{ row.model_name }}</td>
-                    <td>@{{ row.part_description }}</td>
+                    <td>
+                        <a href="#" @click="edit(row)">
+                            <i class="icon-pen6"></i>
+                        </a>
+					</td>
                 </tr>
             </tbody>
         </table> 
     </div>
+
+    <div id="parts_modal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@{{ model.model_name }}</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Part Description</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <tr v-for="(row,index) in parts" v-show="row.delete_flag == 'N'">
+                              
+                                <td><input type="text" class="form-control" placeholder="Kindly indicate the part name..." v-model="row.description" /></td>
+                                <td>
+                                    <a href="#" @click="deletePart(row,index)">
+                                        <i class="icon-trash text-danger"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn bg-primary text-left" @click="addPart">Add</button>
+                    <button type="button" class="btn bg-success" @click="save">Save changes</button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /basic modal -->
 
 </div>
 <!-- /basic table -->
@@ -47,7 +94,9 @@
     var vm =  new Vue({
         el : "#app",
         data: {
-            list : []
+            list : [],
+            model : {},
+            parts : []
         },
         created: function () {
             var self = this;
@@ -111,7 +160,50 @@
            
         },
         methods :{
+           edit(row){
+               this.model = row;
            
+                axios.get('parts/get/' + row.model_id)
+                .then( (response) => {
+                    this.parts = response.data;
+            
+                }).catch( (error) => {
+                    console.log(error);
+                });
+
+               $("#parts_modal").modal('show');
+           },
+           addPart(){
+               this.parts.push({
+                   part_id : '',
+                   description : '',
+                   delete_flag : 'N'
+               });
+           },
+           deletePart(row,index){
+                if(row.part_id == ""){
+                    this.parts.splice(index,1);
+                }
+                else {
+                    this.parts[index].delete_flag = 'Y';
+                }
+           },
+           save(){
+               axios.post('parts/submit', {
+                   model : this.model,
+                   parts : this.parts
+               }).then( res => {
+                   swalInit({
+                        title: 'Parts Update',
+                        text: res.data.message,
+                        type: 'success',
+                        allowEscapeKey: false,
+                        allowEnterKey: false
+                    });
+               }).catch(err => {
+                   console.log(err);
+               });
+           }
         }
 
     });

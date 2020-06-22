@@ -25,6 +25,8 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 
 	Route::get('vehicle/search/{cs_no}','VehicleController@get');
 	Route::get('parts/get/{model_id}','ModelPartsController@get');
+	
+	
 
 	Route::post('claim/submit','ClaimsController@store');
 	Route::get('claims/get','ClaimsController@getClaims');
@@ -40,7 +42,10 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('admin/vehicle/get-affected-units','VehicleController@getAffectedUnits');
 	Route::view('admin/models','admin.models')->name('models');
 	Route::get('admin/models/get','ModelPartsController@getModelParts');
+	Route::get('admin/parts/get/{model_id}','ModelPartsController@getParts');
 	Route::get('admin/claims/stats','ClaimsController@getStatistics');
+
+	Route::post('admin/parts/submit','ModelPartsController@store');
 
 	Route::get('unclaimed-list','ClaimsController@unclaimed')->name('unclaimed-list');
 	
