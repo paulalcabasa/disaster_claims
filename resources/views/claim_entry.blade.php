@@ -107,7 +107,7 @@
                         <div class="col-lg-8">
                             <div class="form-check" v-for="parts in vehicleParts">
                                 <label class="form-check-label">
-                                  <input type="checkbox" checked="parts.checked_flag" v-model="parts.checked_flag" class="form-check-input-styled cb_parts" data-fouc="">
+                                  <input type="checkbox" checked="parts.checked_flag" v-model="parts.checked_flag" disabled class="form-check-input-styled cb_parts" data-fouc="">
                                     @{{ parts.description }}
                                 </label>
                             </div>
@@ -121,7 +121,7 @@
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center">
-                        <button type="button" class="btn btn-sm btn-light" @click="selectAll">Select All</button>
+   <!--                      <button type="button" class="btn btn-sm btn-light" @click="selectAll">Select All</button> -->
                         <button type="button" class="btn btn-sm btn-primary" @click="submit">Submit</button>
                     </div>
                 </form>
@@ -187,6 +187,7 @@
                             self.getParts(self.vehicleDetails.model_id);
                         }
                     })
+                   
                     .catch( (error) => {
                         swalInit({
                             title: 'System Error : Get Vehicle Details',
@@ -206,6 +207,9 @@
                 axios.get('parts/get/' + modelId)
                     .then( (response) => {
                         self.vehicleParts = response.data;
+                    })
+                    .then( () => {
+                        self.selectAll();
                     })
                     .catch( (error) => {
                         swalInit({
