@@ -88,7 +88,6 @@
                 </div>
 
                 <div class="modal-body row">
-
                     <div class="col-md-5">
                         <div class="card border-left-2 border-left-blue-400 rounded-0">
 							<div class="card-header">
