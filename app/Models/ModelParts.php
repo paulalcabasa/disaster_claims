@@ -17,7 +17,8 @@ class ModelParts extends Model
             $sql = "SELECT prt.part_id,
                             prt.description,
                             prt.model_id,
-                            'N' delete_flag
+                            'N' delete_flag,
+                            prt.part_no
                     FROM ipc.ipc_dcm_model_parts prt
                     WHERE prt.model_id = :model_id
                         AND prt.status = 'A'";
