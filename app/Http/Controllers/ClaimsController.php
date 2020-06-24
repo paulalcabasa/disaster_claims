@@ -33,12 +33,13 @@ class ClaimsController extends Controller
             $claimHeaderId = $claimHeader->claim_header_id;
 
             foreach($parts as $part){
-                if($part['checked_flag']){
-                    $claimLines = new ClaimLines;
-                    $claimLines->claim_header_id = $claimHeaderId;
-                    $claimLines->part_id = $part['part_id'];
-                    $claimLines->save();
-                }
+               // if($part['checked_flag']){
+                $claimLines = new ClaimLines;
+                $claimLines->claim_header_id = $claimHeaderId;
+                $claimLines->part_id = $part['part_id'];
+                $claimLines->available_flag = $part['checked_flag'] ? 'Y' : 'N';
+                $claimLines->save();
+               // }
             }
 
             DB::commit();
@@ -76,9 +77,23 @@ class ClaimsController extends Controller
         $claimLines = new ClaimLines;
         $header = $claimHeader->getDetails($request->claim_header_id);
         $parts = $claimLines->getParts($request->claim_header_id);
+
+        $partsData = [];
+
+        foreach($parts as $part){
+            array_push($partsData,
+            [
+                'claim_line_id'  => $part->claim_line_id,
+                'part_id'        => $part->part_id,
+                'part_no'        => $part->part_no,
+                'description'    => $part->description,
+                'available_flag' => $part->available_flag == 'Y' ? true : false,
+            ]);
+        }
+
         return [
             'claimDetails' => $header,
-            'parts'  => $parts
+            'parts'  => $partsData
         ];
     }
 
@@ -107,5 +122,27 @@ class ClaimsController extends Controller
             'unclaimed' => $data
         ];
         return view('unclaimed',$data);
+    }
+
+    public function update(Request $request){
+        $header = $request->header;
+        $parts = $request->parts;
+
+        foreach($parts as $part){
+            $claimLines                     = ClaimLines::find($part['claim_line_id']);
+            $claimLines->available_flag = $part['available_flag'] ? 'Y' : 'N';
+            $claimLines->save();
+        }
+    }
+
+    public function submit(Request $request){
+        $header = $request->claim;
+        $claimHeader = ClaimHeader::find($header['claim_header_id']);
+        $claimHeader->status = 2;
+        $claimHeader->updated_by =  session('user')['user_id'];
+        $claimHeader->update_user_source = session('user')['source_id'];
+        $claimHeader->update_date = Carbon::now();
+        $claimHeader->save();
+       
     }
 }

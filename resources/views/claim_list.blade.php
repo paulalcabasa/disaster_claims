@@ -46,50 +46,54 @@
         <table class="table" id="list" >
             <thead>
                 <tr>
+                    <th>Actions</th>
+                    <th>Status</th>
                     <th>Ref No.</th>
                     <th>CS No.</th>
                     <th>Model</th>
                     <th>Variant</th>
                     <th>Requested Parts</th>
                     <th>Date Submitted</th>
-                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
 
-                @foreach($claims as $row)
+             <!--    @foreach($claims as $row) -->
 
-                <tr>
-                    <td>{{ $row->claim_header_id }}</td>
-                    <td>{{ $row->cs_no }}</td>
-                    <td>{{ $row->model }}</td>
-                    <td>{{ $row->variant }}</td>
-                    <td>{{ $row->parts }}</td>
-                    <td>{{ $row->creation_date }}</td>
+                <tr v-for="(row,index) in claims">
                     <td class="text-center">
-                        <div class="list-icons">
+                        <!-- <div class="list-icons">
                             <div class="dropdown">
                                 <a href="#" class="list-icons-item" data-toggle="dropdown">
                                     <i class="icon-menu9"></i>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right">
-                                    <a href="#" class="dropdown-item" @click.prevent="viewDetails({{ $row->claim_header_id }})"><i class="icon-file-text"></i> View details</a>
-                                 <!--    <a href="#" class="dropdown-item"><i class="icon-file-excel"></i> Export to .csv</a>
-                                    <a href="#" class="dropdown-item"><i class="icon-file-word"></i> Export to .doc</a> -->
+                                  <a href="#" class="dropdown-item"><i class="icon-file-excel"></i> Export to .csv</a>
+                                    <a href="#" class="dropdown-item"><i class="icon-file-word"></i> Export to .doc</a> 
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
+                        <a href="#"  @click.prevent="viewDetails(row,index)"><i class="icon-search4"></i></a>
+                              
                     </td>
+                    <td>@{{ row.status }}</td>
+                    <td>@{{ row.claim_header_id }}</td>
+                    <td>@{{ row.cs_no }}</td>
+                    <td>@{{ row.model }}</td>
+                    <td>@{{ row.variant }}</td>
+                    <td>@{{ row.parts }}</td>
+                    <td>@{{ row.creation_date }}</td>
+                    
                 </tr>
-                @endforeach
+             <!--    @endforeach -->
             </tbody>
         </table> 
     </div>
 
     <!-- Modal with h4 -->
     <div id="infoModal" class="modal fade" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Claim Details</h4>
@@ -98,7 +102,7 @@
 
                 <div class="modal-body row">
 
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <div class="card border-left-2 border-left-blue-400 rounded-0">
 							<div class="card-header">
 								<h6 class="card-title">Vehicle Details</h6>
@@ -134,18 +138,31 @@
                     
                     </div>  
 
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                          <div class="card border-left-2 border-left-blue-400 rounded-0">
 							<div class="card-header">
 								<h6 class="card-title">Replacement Parts</h6>
                             </div>
                             
                             <div class="card-body">
-                                <ul>
+                                <ul v-show="curHeader.status == 'submitted'">
                                     <li v-for="part in curClaim.parts">
                                         @{{ part.description }}
                                     </li>
                                 </ul>
+                               <form>
+                                <div class="form-group row" v-show="curHeader.status == 'pending'">
+
+                                    <div class="col-lg-12">
+                                        <div class="form-check" v-for="parts in curClaim.parts">
+                                            <label class="form-check-label">
+                                            <input type="checkbox"  checked="parts.available_flag" v-model="parts.available_flag" class="form-check-input-styled" data-fouc="">
+                                                @{{ parts.description }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div> 
+                                </form>  
                             </div>
                         </div>
                     </div>
@@ -153,8 +170,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-                    
+                    <button type="button" class="btn btn-primary" @click="save" v-show="curHeader.status == 'pending'">Save</button>
+                    <button type="button" class="btn btn-success" @click="submit" v-show="curHeader.status == 'pending'">Submit</button>  
                 </div>
             </div>
         </div>
@@ -268,7 +285,11 @@
             curClaim : {
                 claimDetails : [],
                 parts : []
-            }
+            },
+            curHeader : {},
+            claims : {!! json_encode($claims) !!},
+            curRowIndex : 0
+        
         },
         created: function () {
             
@@ -277,11 +298,21 @@
            // Initialize plugin
            
         },
+        updated() {
+            $('.form-check-input-styled').uniform();
+            $('.form-input-styled').uniform({
+                fileButtonClass: 'action btn bg-warning-400'
+            });
+
+        },
+
         methods :{
-            viewDetails(claimHeaderId){
+            viewDetails(row,index){
                 var self = this;
-                axios.get('claims/get/' + claimHeaderId)
+                self.curRowIndex = index;
+                axios.get('claims/get/' + row.claim_header_id)
                     .then( (response) => {
+                        self.curHeader = row;
                         self.curClaim = response.data;
                     })
                     .then( () => {
@@ -359,6 +390,62 @@
                             width: 'auto'
                         });
 
+                    });
+            },
+            submit(){
+                var self = this;
+                swalInit({
+                    title: 'Are you sure?',
+                    text: 'You will not be able to modify changes on this request.',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes'
+                }).then( (result) => {
+                    if(result.value){
+                        axios.post('claims/submit',{
+                            claim : self.curHeader
+                        }).then( (response) => {
+                            swalInit({
+                                title: 'Claim Submission',
+                                text: 'You have succesfully submitted your claim.',
+                                type: 'success',
+                                allowEscapeKey: false,
+                                allowEnterKey: false
+                            });
+                            self.claims[self.curRowIndex].status = 'submitted';
+                        }).catch( (error) => {
+                            swalInit({
+                                title: 'System Error : Claim Submission',
+                                text: 'Unexpected error occured! Please contact system developer.',
+                                type: 'error',
+                                allowEscapeKey: false,
+                                allowEnterKey: false
+                            });
+                        });
+                    }
+                });
+            },
+            save(){
+                var self = this;
+                axios.post('claims/update',{
+                        header : self.curHeader,
+                        parts : self.curClaim.parts
+                    }).then( (response) => {
+                        swalInit({
+                            title: 'Claim Update',
+                            text: 'You have succesfully updated your claim.',
+                            type: 'success',
+                            allowEscapeKey: false,
+                            allowEnterKey: false
+                        });
+                    }).catch( (error) => {
+                        swalInit({
+                            title: 'System Error : Claim Submission',
+                            text: 'Unexpected error occured! Please contact system developer.',
+                            type: 'error',
+                            allowEscapeKey: false,
+                            allowEnterKey: false
+                        });
                     });
             }
         }

@@ -107,7 +107,7 @@
                         <div class="col-lg-8">
                             <div class="form-check" v-for="parts in vehicleParts">
                                 <label class="form-check-label">
-                                  <input type="checkbox" checked="parts.checked_flag" v-model="parts.checked_flag" disabled class="form-check-input-styled cb_parts" data-fouc="">
+                                  <input type="checkbox" checked="parts.checked_flag" v-model="parts.checked_flag" class="form-check-input-styled cb_parts" data-fouc="">
                                     @{{ parts.description }}
                                 </label>
                             </div>
@@ -121,8 +121,8 @@
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center">
-   <!--                      <button type="button" class="btn btn-sm btn-light" @click="selectAll">Select All</button> -->
-                        <button type="button" class="btn btn-sm btn-primary" @click="submit">Submit</button>
+                        <button type="button" class="btn btn-sm btn-light" @click="selectAll">Select All</button>
+                        <button type="button" class="btn btn-sm btn-primary" @click="save">Save</button>
                     </div>
                 </form>
             </div>
@@ -244,7 +244,7 @@
             unblockPage(){
                  $.unblockUI();
             },
-            submit(){
+            save(){
                 var self = this;
 
                 var ctrSelectedParts = 0;
@@ -274,7 +274,7 @@
                 }).then( (result) => {
                     if(result.value){
                         self.blockPage();
-                        axios.post('claim/submit',{
+                        axios.post('claim/save',{
                             csNo : self.csNo,
                             parts : self.vehicleParts
                         }).then( (response) => {

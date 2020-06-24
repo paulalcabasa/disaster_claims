@@ -18,7 +18,8 @@ class ClaimHeader extends Model
                         msib.attribute9 variant,
                         ipc_dms.ipc_get_vehicle_variant (msib.segment1) model,
                         to_char(ch.creation_date,'mm/dd/yyyy') creation_date,
-                        LISTAGG(parts.description, ', ') WITHIN GROUP (ORDER BY parts.description) parts
+                        LISTAGG(parts.description, ', ') WITHIN GROUP (ORDER BY parts.description) parts,
+                        st.status
                 FROM ipc.ipc_dcm_claim_header ch
                     LEFT join mtl_serial_numbers msn
                         ON ch.cs_no = msn.serial_number
@@ -28,6 +29,8 @@ class ClaimHeader extends Model
                         ON cl.claim_header_id = ch.claim_header_id
                     LEFT JOIN  ipc.ipc_dcm_model_parts parts
                         ON parts.part_id = cl.part_id
+                    LEFT JOIN ipc.ipc_dcm_status st
+                        ON st.id = ch.status
                 WHERE 1 = 1
                     AND ch.customer_id = :customer_id
                     AND msib.organization_id IN (121)
@@ -39,7 +42,8 @@ class ClaimHeader extends Model
                     ch.cs_no,
                     msib.attribute9 ,
                     msib.segment1,
-                    ch.creation_date";
+                    ch.creation_date,
+                    st.status";
         
         $params = [
             'customer_id' => $customer_id
@@ -57,7 +61,8 @@ class ClaimHeader extends Model
                         to_char(ch.creation_date,'mm/dd/yyyy') creation_date,
                         cust.party_name customer_name,
                         cust.account_name,
-                        LISTAGG(parts.description, ', ') WITHIN GROUP (ORDER BY parts.description) parts
+                        LISTAGG(parts.description, ', ') WITHIN GROUP (ORDER BY parts.description) parts,
+                        st.status
                 FROM ipc.ipc_dcm_claim_header ch
                     LEFT join mtl_serial_numbers msn
                         ON ch.cs_no = msn.serial_number
@@ -70,6 +75,8 @@ class ClaimHeader extends Model
                         ON cl.claim_header_id = ch.claim_header_id
                     LEFT JOIN  ipc.ipc_dcm_model_parts parts
                         ON parts.part_id = cl.part_id
+                    LEFT JOIN ipc.ipc_dcm_status st
+                        ON st.id = ch.status
                 WHERE 1 = 1
                     AND msib.organization_id IN (121)
                     AND msib.inventory_item_status_code = 'Active'
@@ -82,7 +89,8 @@ class ClaimHeader extends Model
                     msib.segment1,
                     ch.creation_date,
                     cust.account_name,
-                    cust.party_name
+                    cust.party_name,
+                    st.status
                 ";
     
         $query = DB::select($sql);

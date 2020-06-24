@@ -28,9 +28,11 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	
 	
 
-	Route::post('claim/submit','ClaimsController@store');
+	Route::post('claim/save','ClaimsController@store');
 	Route::get('claims/get','ClaimsController@getClaims');
 	Route::get('claims/get/{claim_header_id}','ClaimsController@show');
+	Route::post('claims/update','ClaimsController@update');
+	Route::post('claims/submit','ClaimsController@submit');
 
 	// admin
 //	Route::view('admin/claim-list','admin.claims')->name('admin-claims');
