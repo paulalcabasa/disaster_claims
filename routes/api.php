@@ -16,3 +16,6 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('export-travis-rs', 'ReportsController@exportTravisRs')->name('reports.export_travis_rs');
+Route::get('export-travis-pullout', 'ReportsController@exportTravizPullout')->name('reports.export_travis_pullout');
