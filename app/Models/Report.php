@@ -30,6 +30,8 @@ class Report extends Model
                         ELSE 'No Data'
                     END                                            AS acct_type
                     ,DATE_FORMAT(rdr.delivery_date, '%m/%d/%Y')     AS delivery_date
+                    ,c.addr_line_1
+                    ,c.addr_line_2
 
             /* */
                 FROM t_crm_retail_sale rs JOIN (t_crm_vehicle v JOIN t_crm_vehicle_tran t ON v.db_id = t.db_id
@@ -71,6 +73,8 @@ class Report extends Model
                         ELSE 'No Data'
                     END                                            AS acct_type
                     ,DATE_FORMAT(rdr.delivery_date, '%m/%d/%Y')     AS delivery_date
+                    ,c.addr_line_1
+                    ,c.addr_line_2
             /* */
                 FROM t_crm_retail_sale rs JOIN (t_crm_vehicle v JOIN t_crm_vehicle_tran t ON v.db_id = t.db_id
                                                                 JOIN t_crm_customer_vehicle cv ON v.db_id = cv.vehicle_db_id
