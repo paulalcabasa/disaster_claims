@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\VehicleModel;
 use App\Models\ModelParts;
+use App\Models\Vehicle;
 use DB;
 
 class ModelPartsController extends Controller
@@ -48,7 +49,6 @@ class ModelPartsController extends Controller
                 ->where('status','A')->get(['description']);
         $vehicles = VehicleModel::all();
 
-       
         $headers = ['Model'];
 
         $chrome_matrix = [];
@@ -64,7 +64,6 @@ class ModelPartsController extends Controller
             $vehicle_parts = ModelParts::select('description')->where('model_id', $vehicle->model_id)->pluck('description')->toArray();
 
             foreach($parts as $part){
-              
                 if(in_array($part->description, $vehicle_parts)){
                     array_push($vehicle_data, 'Y');
                 }
@@ -141,6 +140,52 @@ class ModelPartsController extends Controller
             $model,
             $parts
         ]);
+    }
+
+    public function affectedUnitsChrome(){
+        $data = [];
+        $parts = ModelParts::distinct()
+                ->where('status','A')->get(['description']);
+      
+        //$vehicles = VehicleModel::all();
+
+        $m_vehicle = new Vehicle;
+        $affectedUnits = $m_vehicle->getAffectedUnitsForChrome();
+       
+        $headers = ['Model', 'CS No.'];
+
+        $chrome_matrix = [];
+
+        foreach($parts as $part){
+            array_push($headers, $part->description);
+        }
+        
+        foreach($affectedUnits as $vehicle){
+            $vehicle_data = [];
+            array_push($vehicle_data, $vehicle->sales_model);
+            array_push($vehicle_data, $vehicle->cs_number);
+            
+            $vehicle_parts = ModelParts::select('description')->where('model_id', $vehicle->model_id)->pluck('description')->toArray();
+
+            foreach($parts as $part){
+                if(in_array($part->description, $vehicle_parts)){
+                    array_push($vehicle_data, 'Y');
+                }
+                else {
+                    array_push($vehicle_data, 'N');
+                }
+            }
+            
+            array_push($chrome_matrix,$vehicle_data);
+
+        }
+        
+        $data = [
+            'header' => $headers,
+            'chrome_matrix' => $chrome_matrix
+        ];
+
+        return view('affected_units_chrome',$data);
     }
 
 }

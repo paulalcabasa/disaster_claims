@@ -197,4 +197,76 @@ class Vehicle extends Model
         $query = DB::select($sql);  
         return $query;
     }
+
+    public function getAffectedUnitsForChrome(){
+        $sql = "SELECT affected_units.*,
+                        dcm_models.model_id
+                FROM (
+                SELECT msib.inventory_item_id,
+                                        msn.serial_number cs_number,
+                                        msib.organization_id,
+                                        ipc_dms.ipc_get_vehicle_variant (msib.segment1) model_variant,
+                                        NVL (msib.attribute8, 'NO COLOR')               color,
+                                        msib.segment1                                   prod_model,
+                                        msib.description                                prod_model_desc,
+                                        CASE WHEN msib.organization_id = 88 THEN 
+                                            (SELECT attribute9 FROM mtl_system_items_b WHERE inventory_item_id = msib.inventory_item_id AND organization_id = 121) 
+                                        ELSE msib.attribute9 END  sales_model,
+                                        msib.attribute29                                vehicle_type,
+                                        msn.attribute2 vin_no,
+                                    (CASE WHEN ipc_dms.ipc_get_vehicle_variant (msib.segment1) IN ('MU-X','D-MAX') AND msib.organization_id = 88 THEN 'IPC' ELSE NVL(ato.location, msn.c_attribute29) END) location,
+                                        TO_CHAR(TO_DATE(replace(rcta.pullout_date,' ',''),'YYYY/MM/DD HH24:MI:SS'),'MM/DD/YYYY') pullout_date,
+                                        nvl(cust.account_name,rcta.customer_name) account_name,
+                                        to_char(rs.declare_date,'MM/DD/YYYY') retail_sale_date
+                                FROM ipc.ipc_dcm_affected_units afu
+                                    LEFT JOIN mtl_serial_numbers msn
+                                        ON msn.serial_number = AFU.CS_NUMBER
+                                    LEFT JOIN mtl_system_items_b msib
+                                        ON msn.inventory_item_id = msib.inventory_item_id
+                                        AND msn.current_organization_id = msib.organization_id
+                                    LEFT JOIN (SELECT rct.trx_number, 
+                                                        rct.trx_date, 
+                                                        rct.attribute3 cs_number, 
+                                                        rct.attribute5 pullout_date, 
+                                                        rct.sold_to_customer_id,
+                                                        rct.bill_to_site_use_id,
+                                                        
+                                                        ac.customer_name
+                                                    FROM ra_customer_trx_all rct
+                                                        LEFT JOIN ipc_vehicle_cm cm
+                                                            ON rct.customer_trx_id = cm.orig_trx_id
+                                                            and cm.CM_TRX_TYPE_ID != 10081
+                                                        LEFT JOIN ar_customers ac
+                                                        ON ac.customer_id = rct.sold_to_customer_id
+                                                    WHERE 1 = 1 
+                                                    AND cm.orig_trx_id IS NULL 
+                                                    AND rct.cust_trx_type_id = 1002
+                                        ) rcta
+                                            ON afu.cs_number = rcta.cs_number
+                                    LEFT JOIN ipc_dms.oracle_customers_v cust
+                                                            ON cust.site_use_id = rcta.bill_to_site_use_id
+                                        left join ipc_dms.crms_retail_sales rs
+                                                on rs.cs_no = afu.cs_number
+                                        LEFT JOIN (SELECT cs_number,
+                                            destination_to location 
+                                            FROM (
+                                                SELECT cs_number,
+                                                        destination_to,
+                                                        transfer_date,
+                                                        RANK ()  OVER (PARTITION BY cs_number ORDER BY transfer_date DESC, date_created DESC) rnk
+                                                    FROM ipc.ipc_vehicle_ato ato
+                                                    WHERE     1 = 1)
+                                            WHERE rnk = 1) ato
+                                            ON ato.cs_number = afu.cs_number
+                                
+                                WHERE 1 = 1
+                                    AND msn.c_attribute30 IS NULL
+                ) affected_units
+                LEFT JOIN IPC.IPC_DCM_MODELS dcm_models
+                    ON dcm_models.model_name  = affected_units.sales_model
+             
+                ";
+        $query = DB::select($sql);  
+        return $query;
+    }
 }
