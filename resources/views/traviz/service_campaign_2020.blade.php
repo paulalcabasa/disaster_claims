@@ -55,7 +55,7 @@
                 <div class="page-header">
                     <div class="page-header-content header-elements-md-inline">
                         <div class="page-title d-flex">
-                            <h4><span class="font-weight-semibold">Isuzu Traviz Service Campaign</span></h4>
+                            <h4><span class="font-weight-semibold">Traviz Service Campaign 2020</span></h4>
                             <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
                         </div>
                     </div>
@@ -65,18 +65,16 @@
                 <!-- Content area -->
                 <div class="content pt-0">
 
-                    <div class="alert bg-info text-white alert-dismissible">
+                    <div class="alert bg-dark alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
                         Thank you for your cooperation. 
                         Based on the vehicle details you provided Your Isuzu Traviz has already been checked.
                     </div>
                     <div class="alert bg-danger text-white alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
-                        Thank you for your cooperation.
-                        The details you provided are not valid vehicle details for Isuzu Traviz.
-                        Kindly check the details and you may try again.
+                        Thank you for your cooperation. The information you provided are not valid vehicle details for Isuzu Traviz. Kindly check the details and you may try again.
                     </div>
-                    <div class="alert bg-success text-white alert-dismissible">
+                    <div class="alert bg-light  alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
                         Thank you for your cooperation.
                         The details you provided are important to us. 
@@ -84,6 +82,13 @@
                         for your appointment or you may wish to encode your contact details below so 
                         our Customer Representatives can get in touch with you.
                     </div>
+
+                    <div class="alert bg-light  alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                        Thank you for providing us the information. Kindly expect a call or email from our Isuzu Authorized Dealer regarding this matter.
+                    </div>
+
+                    
 
                     <div class="row">
                         <div class="col-md-6">
@@ -121,19 +126,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-form-label col-md-3">Sales Model</label>
-                                        <div class="col-md-9">
-                                            <input type="text" class="form-control font-weight-light" placeholder="" readonly="readonly" :value="vehicle.sales_model"/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-form-label col-md-3">Color</label>
-                                        <div class="col-md-9">
-                                            <input type="text" class="form-control font-weight-light" placeholder="" readonly="readonly" :value="vehicle.color" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-form-label col-md-3">Dealer</label>
+                                        <label class="col-form-label col-md-3">Selling Dealer</label>
                                         <div class="col-md-9">
                                             <input type="text" class="form-control font-weight-light" placeholder="" readonly="readonly" :value="vehicle.dealer" />
                                         </div>
@@ -175,8 +168,25 @@
                                                 <input type="text" class="form-control font-weight-light" placeholder="Please type in the email address" v-model="contact.email_address"/>
                                             </div>
                                         </div>
+                                        <div class="form-group row">
+                                            <label class="col-form-label col-md-3">Preferred Isuzu Servicing Dealer</label>
+                                            <div class="col-md-9">
+                                                <select class="form-control">
+                                                    <option value="">Select dealer</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row ml-5 mr-5">
+                                           
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                <input type="checkbox" class="form-check-input-styled" data-fouc="">
+                                                    I confirm giving my consent, and that I have read, understood, and agree to Isuzu Philippine's <a href="#">Privacy Policy.</a>
+                                                </label>
+                                            </div>
+                                        </div>
                                         <div class="text-right">
-											<button type="submit" class="btn btn-primary">Submit <i class="icon-paperplane ml-2"></i></button>
+											<button type="submit" class="btn btn-danger">Send message</button>
 										</div>
                                     </form>
                                 </div>
@@ -220,8 +230,8 @@
             
         },
         mounted : function () {
-           
-           
+         
+            $('.form-check-input-styled').uniform();
         },
         updated() {
           

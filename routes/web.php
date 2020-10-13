@@ -13,7 +13,7 @@
 
 Route::get('/', 'RedirectController@redirect_login');
 Route::get('redirect_logout', 'RedirectController@redirect_logout')->name('redirect_logout');
-Route::get('traviz', 'TravizController@index');
+Route::get('TravizServiceCampaign2020', 'TravizController@service_campaign2020');
 
 Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenticated Users
 	
