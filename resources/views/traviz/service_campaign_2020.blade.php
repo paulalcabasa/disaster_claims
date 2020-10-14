@@ -65,23 +65,14 @@
                         has already been checked.
                     </div>
 
-                    <!-- <div class="alert bg-danger text-white alert-dismissible" v-show="flag.notFound">
-                        <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
-                        Thank you for your cooperation. The vehicle information you have provided is not included
-                        in the Service Campaign for Isuzu Traviz.
-                    </div>
-
                     <div class="alert bg-danger text-white alert-dismissible" v-show="flag.notFound">
                         <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
-                        Thank you for your cooperation. 
-                        The information you provided are not valid vehicle details for Isuzu Traviz. 
-                        Kindly check the details and you may try again.
-                    </div> -->
-
-                    <div class="alert bg-danger text-white alert-dismissible" v-show="flag.notFound">
-                        <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
-                        Thank you for your cooperation. The vehicle information you have provided is not included
-                        in the Service Campaign for Isuzu Traviz. Kindly check the details and you may try again.
+                        <strong>@{{ searchParam }}</strong> not found! Reasons why you encounter this issue:
+                        <ul>
+                            <li>The information you have entered may contain a typographical error.</li>
+                            <li>The information you provided are not valid vehicle details for Isuzu Traviz.</li>
+                            <li>The vehicle information you have provided is not included in the Service Campaign for Isuzu Traviz.</li>
+                        </ul>
                     </div>
 
                     <div class="alert bg-light  alert-dismissible" v-show="flag.found">
