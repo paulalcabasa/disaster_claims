@@ -21,3 +21,4 @@ Route::get('export-travis-rs', 'ReportsController@exportTravisRs')->name('report
 Route::get('export-travis-pullout', 'ReportsController@exportTravizPullout')->name('reports.export_travis_pullout');
 
 Route::get('traviz/get-details/{searchParam}', 'TravizController@findVehicle');
+Route::post('inquiry/submit', 'InquiryController@store');

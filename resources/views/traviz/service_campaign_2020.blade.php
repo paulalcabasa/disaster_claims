@@ -69,18 +69,20 @@
                         Thank you for your cooperation. The information you provided are not valid vehicle details for Isuzu Traviz. Kindly check the details and you may try again.
                     </div>
 
-                    <div class="alert bg-light  alert-dismissible" v-show="flag.success">
+                    <!-- <div class="alert bg-light  alert-dismissible" v-show="flag.success">
                         <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
                         Thank you for your cooperation.
                         The details you provided are important to us. 
                         You may contact your nearest Isuzu dealer to make the necessary arrangement 
                         for your appointment or you may wish to encode your contact details below so 
                         our Customer Representatives can get in touch with you.
-                    </div>
+                    </div> -->
 
                     <div class="alert bg-light  alert-dismissible" v-show="flag.success">
                         <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
-                        Thank you for providing us the information. Kindly expect a call or email from our Isuzu Authorized Dealer regarding this matter.
+                        Thank you for providing us the information. 
+                        The details you provided are important to us.
+                        Kindly expect a call or email from our Isuzu Authorized Dealer regarding this matter.
                     </div>
 
                     
@@ -250,7 +252,6 @@ var vm =  new Vue({
         
     },
     mounted : function () {
-        
         $('.form-check-input-styled').uniform();
         $('#preferred_servicing_dealer').select2();
     },
@@ -306,7 +307,22 @@ var vm =  new Vue({
             $.unblockUI();
         },
         submitInquiry(){
-            alert("inquiry submitted");
+            this.blockPage();
+            axios.post('api/inquiry/submit', {
+                inquiry : this.inquiry,
+                vehicle : this.vehicle
+            }).then(response => {
+                if(response.data.status == "success"){
+                    this.resetForm();
+                    this.searchParam = "";
+                    this.flag.success = true;
+                }
+            }).then(error => {
+                console.log(error);
+            }).finally(() => {
+                this.unblockPage();
+            });
+
         }
     }
 
