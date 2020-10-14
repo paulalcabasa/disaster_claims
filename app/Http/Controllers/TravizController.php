@@ -10,7 +10,10 @@ class TravizController extends Controller
 {
     public function service_campaign2020()
     {   
-        $dealers = Dealer::orderBy('account_name', 'ASC')->get();
+        $dealers = Dealer::orderBy('account_name', 'ASC')
+                ->selectRaw('id, initcap(lower(account_name)) account_name')
+                ->whereNotIn('id', [3])
+                ->get();
       
         $data = [
             'dealers' => $dealers

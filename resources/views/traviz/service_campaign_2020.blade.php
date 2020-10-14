@@ -61,22 +61,37 @@
                     <div class="alert bg-dark alert-dismissible" v-show="flag.exist">
                         <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
                         Thank you for your cooperation. 
-                        Based on the vehicle details you provided Your Isuzu Traviz has already been checked.
+                        Based on the vehicle details you provided Your Isuzu Traviz
+                        has already been checked.
+                    </div>
+
+                    <!-- <div class="alert bg-danger text-white alert-dismissible" v-show="flag.notFound">
+                        <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                        Thank you for your cooperation. The vehicle information you have provided is not included
+                        in the Service Campaign for Isuzu Traviz.
                     </div>
 
                     <div class="alert bg-danger text-white alert-dismissible" v-show="flag.notFound">
                         <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
-                        Thank you for your cooperation. The information you provided are not valid vehicle details for Isuzu Traviz. Kindly check the details and you may try again.
+                        Thank you for your cooperation. 
+                        The information you provided are not valid vehicle details for Isuzu Traviz. 
+                        Kindly check the details and you may try again.
+                    </div> -->
+
+                    <div class="alert bg-danger text-white alert-dismissible" v-show="flag.notFound">
+                        <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                        Thank you for your cooperation. The vehicle information you have provided is not included
+                        in the Service Campaign for Isuzu Traviz. Kindly check the details and you may try again.
                     </div>
 
-                    <!-- <div class="alert bg-light  alert-dismissible" v-show="flag.success">
+                    <div class="alert bg-light  alert-dismissible" v-show="flag.found">
                         <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
                         Thank you for your cooperation.
                         The details you provided are important to us. 
                         You may contact your nearest Isuzu dealer to make the necessary arrangement 
                         for your appointment or you may wish to encode your contact details below so 
                         our Customer Representatives can get in touch with you.
-                    </div> -->
+                    </div>
 
                     <div class="alert bg-light  alert-dismissible" v-show="flag.success">
                         <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
@@ -143,35 +158,35 @@
                                 <div class="card-body">
                                     <form v-on:submit.prevent="submitInquiry">
                                         <div class="form-group row">
-                                            <label class="col-form-label col-md-3">Registered owner</label>
+                                            <label class="col-form-label col-md-3">Registered owner <span class="text-danger">*</span> </label>
                                             <div class="col-md-9">
                                                 <input type="text" required class="form-control font-weight-light" placeholder="Please input the registed owner" v-model="inquiry.registered_owner" />
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label class="col-form-label col-md-3">Contact person</label>
+                                            <label class="col-form-label col-md-3">Contact person <span class="text-danger">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="text" required class="form-control font-weight-light" placeholder="Please type in the contact person" v-model="inquiry.contact_person"/>
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label class="col-form-label col-md-3">Contact number</label>
+                                            <label class="col-form-label col-md-3">Contact number <span class="text-danger">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="text" required class="form-control font-weight-light" placeholder="Please type in the contact number" v-model="inquiry.contact_number" />
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label class="col-form-label col-md-3">Email address</label>
+                                            <label class="col-form-label col-md-3">Email address <span class="text-danger">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="email" required class="form-control font-weight-light" placeholder="Please type in the email address" v-model="inquiry.email_address"/>
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label class="col-form-label col-md-3">Preferred Isuzu Servicing Dealer</label>
+                                            <label class="col-form-label col-md-3">Preferred Isuzu Servicing Dealer <span class="text-danger">*</span></label>
                                             <div class="col-md-9">
                                                 <select required class="form-control" id="preferred_servicing_dealer" v-model="inquiry.preferred_servicing_dealer" v-select2>
                                                     <option value="">Select dealer</option>
-                                                    <option v-for="dealer in dealers" :value="dealer.id">@{{ dealer.account_name }}</option>
+                                                    <option v-for="dealer in dealers" :value="dealer.id">Isuzu @{{ dealer.account_name }}</option>
                                                 </select>
                                             </div>
                                         </div>
