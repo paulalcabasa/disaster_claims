@@ -19,3 +19,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('export-travis-rs', 'ReportsController@exportTravisRs')->name('reports.export_travis_rs');
 Route::get('export-travis-pullout', 'ReportsController@exportTravizPullout')->name('reports.export_travis_pullout');
+
+Route::get('traviz/get-details/{searchParam}', 'TravizController@findVehicle');
