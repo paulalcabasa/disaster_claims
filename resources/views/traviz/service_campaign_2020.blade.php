@@ -69,10 +69,11 @@
                         <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
                         <strong>@{{ searchParam }}</strong> not found! Reasons why you encounter this issue:
                         <ul>
-                            <li>The information you have entered may contain a typographical error.</li>
+                            <li>The information you have entered may contain a typographical error. Kindly check the details and you may try again.</li>
                             <li>The information you provided are not valid vehicle details for Isuzu Traviz.</li>
                             <li>The vehicle information you have provided is not included in the Service Campaign for Isuzu Traviz.</li>
                         </ul>
+                        For further assistance, you may contact any of our authorized Isuzu Dealers.
                     </div>
 
                     <div class="alert bg-light  alert-dismissible" v-show="flag.found">
@@ -90,9 +91,7 @@
                         The details you provided are important to us.
                         Kindly expect a call or email from our Isuzu Authorized Dealer regarding this matter.
                     </div>
-
                     
-
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card">
