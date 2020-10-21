@@ -66,9 +66,9 @@ class SendInquiry extends Command
 
                 //Recipients
                 $mail->setFrom($mailCredentials->email, 'IPC Customer Relations');
-                $mail->addAddress('paulalcabasa@gmail.com');
-               // $mail->addAddress($row->dealer_crt_email);     // Add a recipient
-               // $mail->addCC('customer-relations@isuzuphil.com');
+               // $mail->addAddress('paulalcabasa@gmail.com');
+                $mail->addAddress($row->dealer_crt_email);     // Add a recipient
+                $mail->addCC('customer-relations@isuzuphil.com');
                 $mail->addBCC('paul-alcabasa@isuzuphil.com');
 
                 $data = [
@@ -80,9 +80,9 @@ class SendInquiry extends Command
                 $mail->Body    = view('email/inquiry', $data);
 
                 if($mail->send()){
-                    //$inquiry = Inquiry::findOrFail($row->id);
-                   // $inquiry->date_sent = Carbon::now();
-                   // $inquiry->save();
+                    $inquiry = Inquiry::findOrFail($row->id);
+                    $inquiry->date_sent = Carbon::now();
+                    $inquiry->save();
                 }
                 
             } catch (Exception $e) {
