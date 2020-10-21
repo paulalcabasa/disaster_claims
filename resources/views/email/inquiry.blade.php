@@ -169,9 +169,10 @@
 						<td height="20" style="font-size: 20px; line-height: 20px;">&nbsp;</td>
 					</tr>
 					<tr>
-						<td align="center" style="color: #343434; font-size: 24px; font-family: Quicksand, Calibri, sans-serif; font-weight:700;letter-spacing: 3px; line-height: 35px;"
+						<td align="center" style="color: #343434; font-family: Quicksand, Calibri, sans-serif;"
 							class="main-header">
-                            <div style="line-height: 35px">Isuzu Traviz Service Campaign</div>
+                            <div style="font-weight:700; font-size:24px;letter-spacing:3px;">Isuzu Traviz Service Campaign</div>
+                            <div style="font-weight:700; font-size:14px;">(Turbocharger Oil Pipe with Bracket Replacement)</div>
 						</td>
 					</tr>
 
@@ -183,41 +184,33 @@
 						<td height="20" style="font-size: 20px; line-height: 20px;">&nbsp;</td>
 					</tr>
 
-					<tr style="color: #343434; font-size: 16px; font-family: 'Work Sans', Calibri, sans-serif; ">
-                        <td style="width:100%;">	 
-							<table style="width:100%;color:#343434;">
-								<tr>
-                                    <td width="200" style="font-weight:bold;">Registered owner:</td>
-                                    <td><?php echo $details->registered_owner; ?></td>
-								</tr>
-							    <tr>
-                                    <td width="200" style="font-weight:bold;">Contact person:</td>
-                                    <td><?php echo $details->contact_person; ?></td>
-                                </tr>
-                                <tr>
-                                    <td width="200" style="font-weight:bold;">Contact number:</td>
-                                    <td><?php echo $details->contact_number; ?></td>
-                                </tr>
-                                <tr>
-                                    <td width="200" style="font-weight:bold;">Email addrress :</td>
-                                    <td><?php echo $details->email_address; ?></td>
-                                </tr>
-                                <tr>
-                                    <td width="200" style="font-weight:bold;">Preferred servicing dealer :</td>
-                                    <td>Isuzu <?php echo ucfirst(strtolower($details->account_name)); ?></td>
-                                </tr>
-                    
-                            </table>	
+					<tr>
+						<td>
+							<span style="font-weight:bold;">Customer information</span>
+							<ul>
+								<li> Registered owner : <?php echo $details->registered_owner; ?> </li>
+								<li> Contact person : <?php echo $details->contact_person; ?> </li>
+								<li> Contact number : <?php echo $details->contact_number; ?> </li>
+								<li> Email addrress : <?php echo $details->email_address; ?> </li>
+								<li> Preferred servicing dealer : <?php echo ucfirst(strtolower($details->account_name)); ?> </li>
+							</ul>
 						</td>
 					</tr>
-
 					<tr>
-						<td height="25" style="font-size: 25px; line-height: 25px;">&nbsp;</td>
+						<td>
+							<span style="font-weight:bold;">Vehicle information</span>
+							<ul>
+								<li> VIN : <?php echo $details->vin; ?> </li>
+								<li> CS No. : <?php echo $details->cs_no; ?> </li>
+								<li> Engine No. : <?php echo $details->engine_no; ?> </li>
+								<li> Selling Dealer : <?php echo $details->selling_dealer; ?> </li>
+							</ul>
+						</td>
 					</tr>
-
+		
                     <tr>
-						<td height="25" style="font-size: 14px; line-height: 25px; font-style:italic;">
-                        <strong>IPC reminder:</strong> Please acknowledge the customer inquiry within the day
+						<td height="25" style="font-size: 14px; line-height: 25px;">
+						Important Reminder : Kindly acknowledge the customer inquiry within the day.
                         </td>
 					</tr>
 				
