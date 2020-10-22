@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule -> exec("php artisan inquiry:send");
+     //   $schedule -> exec("php artisan inquiry:send");
     }
 
     /**
