@@ -116,19 +116,7 @@
 								<span>Chrome Matrix</span>
 							</a>
 						</li>
-						<li class="nav-item-header"><div class="text-uppercase font-size-xs line-height-xs">REPORTS</div> <i class="icon-menu" title="Main"></i></li>
-						<li class="nav-item">
-							<a href="{{ route('reports.export_travis_rs') }}" class="nav-link">
-								<i class="icon-list-unordered"></i>
-								<span>TRAVIZ RS</span>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a href="{{ route('reports.export_travis_pullout') }}" class="nav-link">
-								<i class="icon-list-unordered"></i>
-								<span>TRAVIZ PULLOUT</span>
-							</a>
-						</li>
+					
 						@endif 
 						<!-- /main -->
 
